@@ -24,8 +24,18 @@ export class CogRegisters {
 
   constructor(private systemCounter: SystemCounter) {}
 
+  private parSet: boolean = false;
+
   get par() {
     return this._par;
+  }
+
+  set par(value: number) {
+    if (this.parSet) {
+      throw new Error("PAR is readonly");
+    }
+    this._par = value;
+    this.parSet = true;
   }
 
   get cnt(): number {
@@ -37,5 +47,9 @@ export class CogRegisters {
       throw new Error("Invalid register address: " + regNum.toString(16));
     }
     return this[SPECIAL_REGISTERS[regNum]!];
+  }
+
+  reset() {
+    this.parSet = false;
   }
 }

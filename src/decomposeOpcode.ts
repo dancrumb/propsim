@@ -3,10 +3,11 @@ export const ZCRI_MASK = 0b0000_0011_1100_0000_0000_0000_0000_0000;
 export const CON_MASK = 0b0000_0000_0011_1100_0000_0000_0000_0000;
 export const DEST_MASK = 0b0000_0000_0000_0011_1111_1110_0000_0000;
 export const SRC_MASK = 0b0000_0000_0000_0000_0000_0001_1111_1111;
-import { INSTR_TO_OPS } from "./opcodes.js";
+import { INSTR_TO_OP } from "./opcodes.js";
 import type { Operation } from "./Operation.js";
+import type { OpCode } from "./opcodes.js";
 
-export function decomposeOpcode(opcode: number): Operation {
+export function decomposeOpcode(opcode: number): Operation | null {
   const inst = (opcode & INSTR_MASK) >>> 26;
   const zcri = (opcode & ZCRI_MASK) >>> 22;
   const con = (opcode & CON_MASK) >>> 18;
@@ -22,8 +23,23 @@ export function decomposeOpcode(opcode: number): Operation {
     };
   }
 
+  const instr: OpCode | undefined = INSTR_TO_OP.find(
+    ([instCode, discriminators]) => {
+      if (inst !== instCode) {
+        return false;
+      }
+      return (
+        (discriminators[0] === undefined || discriminators[0] === zcri) &&
+        (discriminators[1] === undefined || discriminators[1] === (src & 0b111))
+      );
+    }
+  )?.[2];
+  if (!instr) {
+    return null;
+  }
+
   return {
-    instr: INSTR_TO_OPS[inst]!,
+    instr,
     zcri,
     con,
     dest,

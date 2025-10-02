@@ -11,18 +11,18 @@ export class CogRam {
   }
 
   readURegister(address: number): number {
-    return this.buf.readUInt32LE(address & 0xfc);
+    return this.buf.readUInt32LE(address * 4);
   }
 
   readRegister(address: number): number {
-    return this.buf.readInt32LE(address & 0xfc);
+    return this.buf.readInt32LE(address * 4);
   }
 
   writeURegister(address: number, value: number) {
-    this.buf.writeUInt32LE(value, address & 0xfc);
+    this.buf.writeUInt32LE(value, address * 4);
   }
 
   writeRegister(address: number, value: number) {
-    this.buf.writeInt32LE(value, address & 0xfc);
+    this.buf.writeInt32LE(value, address * 4);
   }
 }

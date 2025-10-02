@@ -8,24 +8,26 @@ const OPCODE_TABLE = [
   ["ADDX", 0b110010],
   ["AND", 0b011000],
   ["ANDN", 0b011001],
-  ["CALL", 0b010111],
-  ["CLKSET", 0b000011],
+  ["CALL", 0b010111, [0b0011]],
+  ["CLKSET", 0b000011, [0b0001, 0b000]],
   ["CMP", 0b100001],
   ["CMPS", 0b110000],
   ["CMPSUB", 0b111000],
   ["CMPSX", 0b110001],
   ["CMPX", 0b110011],
-  ["COGID", 0b000011],
-  ["COGINIT", 0b000011],
-  ["COGSTOP", 0b000011],
+  ["COGID", 0b000011, [0b0011, 0b001]],
+  ["COGINIT", 0b000011, [0b0001, 0b010]],
+  ["COGSTOP", 0b000011, [0b0001, 0b011]],
   ["DJNZ", 0b111001],
   ["HUBOP", 0b000011],
-  ["JMP", 0b010111],
-  ["JMPRET", 0b010111],
-  ["LOCKCLR", 0b000011],
-  ["LOCKNEW", 0b000011],
-  ["LOCKRET", 0b000011],
-  ["LOCKSET", 0b000011],
+  ["JMP", 0b010111, [0b0001]],
+  ["JMP", 0b010111, [0b0000]],
+  ["JMPRET", 0b010111, [0b0010]],
+  ["JMPRET", 0b010111, [0b0011]],
+  ["LOCKCLR", 0b000011, [0b0001, 0b111]],
+  ["LOCKNEW", 0b000011, [0b0011, 0b100]],
+  ["LOCKRET", 0b000011, [0b0001, 0b101]],
+  ["LOCKSET", 0b000011, [0b0001, 0b110]],
   ["MAX", 0b010011],
   ["MAXS", 0b010001],
   ["MIN", 0b010010],
@@ -49,7 +51,7 @@ const OPCODE_TABLE = [
   ["RDBYTE", 0b000000],
   ["RDLONG", 0b000010],
   ["RDWORD", 0b000001],
-  ["RET", 0b010111],
+  ["RET", 0b010111, [0b0001]],
   ["REV", 0b001111],
   ["ROL", 0b001001],
   ["ROR", 0b001000],
@@ -79,8 +81,20 @@ const OPCODE_TABLE = [
   ["XOR", 0b011011],
 ] as const;
 
-export const OPS_TO_INSTR: Record<string, number> =
+export type OpCode = (typeof OPCODE_TABLE)[number][0];
+
+export const OP_TO_INSTR: Record<string, number> =
   Object.fromEntries(OPCODE_TABLE);
 
-export const INSTR_TO_OPS: Record<number, (typeof OPCODE_TABLE)[number][0]> =
-  Object.fromEntries(OPCODE_TABLE.map(([instr, op]) => [op, instr]));
+export const INSTR_TO_OP: [
+  instr: number,
+  discriminators: ReadonlyArray<number>,
+  opCode: OpCode
+][] = OPCODE_TABLE.map(
+  ([instr, op, discriminators]) =>
+    [op, discriminators ?? [], instr] satisfies [
+      number,
+      ReadonlyArray<number>,
+      OpCode
+    ]
+).sort(([opA], [opB]) => opA - opB);

@@ -5,7 +5,7 @@ export class SystemClock {
   private tickSubject = new BehaviorSubject<number>(this.tickCount);
   public tick$ = this.tickSubject.asObservable();
 
-  constructor(private frequencyHz: number) {}
+  constructor() {}
 
   stepForward(ticks: number = 1) {
     this.tickCount += ticks;
