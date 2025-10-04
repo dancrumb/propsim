@@ -3,56 +3,70 @@ import type { SystemClock } from "./SystemClock.js";
 import { CogRam } from "./CogRam.js";
 import { CogRegisters } from "./CogRegisters.js";
 import type { SystemCounter } from "./SystemCounter.js";
-import { Gpio } from "./Gpio.js";
-import { classicNameResolver } from "typescript";
-import type { OpCode } from "./opcodes.js";
-import type { Operation } from "./Operation.js";
-import { decomposeOpcode } from "./decomposeOpcode.js";
+
 import { BehaviorSubject } from "rxjs";
+import { CogFlags } from "./CogFlags.js";
+import { OperationFactory } from "./operation-implementations/OperationFactory.js";
+import type { BaseOperation } from "./operation-implementations/BaseOperation.js";
+
+type PipelinePhase =
+  | "read"
+  | "resolve"
+  | "resolved"
+  | "executing"
+  | "writeback";
 
 export class Cog {
-  private pc = new BehaviorSubject(0);
+  private _pc = new BehaviorSubject(0);
   private ram = new CogRam();
   private registers: CogRegisters;
-  private localGpio = new Gpio();
   private running: boolean = false;
+  private flags = new CogFlags();
 
-  private pipelinePhase: "read" | "resolve" | "execute" | "writeback" = "read";
+  private pipelinePhase = new BehaviorSubject<PipelinePhase>("read");
 
   private instructionRegister: number = 0;
-  private currentOperation: Operation | null = null;
+  public readonly currentOperation$ = new BehaviorSubject<BaseOperation | null>(
+    null
+  );
 
   constructor(
     private systemClock: SystemClock,
     private hub: Hub,
     systemCounter: SystemCounter,
-    private gpio: Gpio,
     public readonly id: number
   ) {
     this.registers = new CogRegisters(systemCounter);
     this.systemClock.tick$.subscribe({
       next: () => {
         if (!this.running) return;
-        switch (this.pipelinePhase) {
+        switch (this.pipelinePhase.value) {
           case "read": {
             this.instructionRegister = this.ram.readURegister(
-              this.pc.getValue()
+              this._pc.getValue()
             );
-            this.pipelinePhase = "resolve";
+            this.pipelinePhase.next("resolve");
             break;
           }
           case "resolve": {
-            this.currentOperation = decomposeOpcode(this.instructionRegister);
-            this.pipelinePhase = "execute";
+            this.currentOperation$?.next(
+              OperationFactory.createOperation(this.instructionRegister, this)
+            );
+            this.pipelinePhase.next("resolved");
             break;
           }
-          case "execute": {
-            this.pipelinePhase = "writeback";
+          case "resolved": {
+            if (this.currentOperation$?.value !== null) {
+              this.pipelinePhase.next("executing");
+              this.currentOperation$?.value.execute().then(() => {
+                this.pipelinePhase.next("writeback");
+              });
+            }
             break;
           }
           case "writeback": {
-            this.pc.next((this.pc.value + 1) & 0x1ff);
-            this.pipelinePhase = "read";
+            this.currentOperation$?.value?.updatePC();
+            this.pipelinePhase.next("read");
             break;
           }
           default: {
@@ -61,7 +75,7 @@ export class Cog {
         }
         process.stderr.write(
           `[COG ${this.id}] Phase: ${this.pipelinePhase ?? "WTF"} PC: ${
-            this.pc.value
+            this._pc.value
           } (Running? ${this.running})\n`
         );
       },
@@ -79,6 +93,55 @@ export class Cog {
   }
 
   get pc$() {
-    return this.pc.asObservable();
+    return this._pc.asObservable();
+  }
+
+  isRunning() {
+    return this.running;
+  }
+
+  readRegister(index: number) {
+    if (index >= 0x1f0) {
+      return this.registers.readRegister(index);
+    }
+    return this.ram.readRegister(index);
+  }
+
+  readURegister(index: number) {
+    if (index >= 0x1f0) {
+      return this.registers.readRegister(index);
+    }
+    return this.ram.readURegister(index);
+  }
+
+  writeRegister(index: number, value: number) {
+    if (index >= 0x1f0) {
+      this.registers.writeRegister(index, value);
+    } else {
+      this.ram.writeRegister(index, value);
+    }
+  }
+
+  writeURegister(index: number, value: number) {
+    if (index >= 0x1f0) {
+      this.registers.writeRegister(index, value);
+    } else {
+      this.ram.writeURegister(index, value);
+    }
+  }
+
+  get pc() {
+    return this._pc.getValue();
+  }
+
+  setPC(value: number) {
+    this._pc.next(value & 0x1ff);
+  }
+
+  updateZFlag(set: boolean) {
+    this.flags.Z = set;
+  }
+  updateCFlag(set: boolean) {
+    this.flags.C = set;
   }
 }

@@ -29,6 +29,11 @@ export class CogProcessor {
     if (this.currentOperation === null) {
       const opcode = this.ram.readURegister(this.programCounter);
       this.currentOperation = decomposeOpcode(opcode);
+      if (this.currentOperation === null) {
+        throw new Error(
+          `Invalid opcode at ${this.programCounter.toString(16)}`
+        );
+      }
       processOperation(this.currentOperation).then(() => {
         this.programCounter += 1;
         this.currentOperation = null;

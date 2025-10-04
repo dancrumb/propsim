@@ -15,7 +15,7 @@ export default function HubDisplay({ hub }: { hub: Hub }) {
   return (
     <Box
       position="relative"
-      borderStyle="single"
+      borderStyle="round"
       paddingX={1}
       width={9}
       height={7}
@@ -66,7 +66,7 @@ export default function HubDisplay({ hub }: { hub: Hub }) {
             {currentHub === 6 && <Text>-</Text>}
           </Box>
           <Box width={1} height={1}>
-            <Text>+</Text>
+            <Text>{currentHub % 2 === 0 ? "+" : "x"}</Text>
           </Box>
           <Box width={1} height={1}>
             {currentHub === 2 && <Text>-</Text>}

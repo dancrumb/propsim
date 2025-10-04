@@ -1,13 +1,16 @@
-import { buildOperation } from "./buildOperation.js";
+import { BaseOperation } from "./BaseOperation.js";
 
-export const ADD = buildOperation({
-  execute(srcValue: number, destValue: number) {
-    return srcValue + destValue;
-  },
-  z(srcValue: number, destValue: number, result: number) {
-    return (result & 0xffffffff) === 0;
-  },
-  c(srcValue: number, destValue: number, result: number) {
-    return result > 0xffffffff;
-  },
-});
+export class ADDOperation extends BaseOperation {
+  override performOperation(): Promise<void> {
+    this.result = this.srcValue + this.destValue;
+    return Promise.resolve();
+  }
+
+  override setZ(): void {
+    this.cog.updateZFlag((this.result & 0xffffffff) === 0);
+  }
+
+  override setC(): void {
+    this.cog.updateCFlag(this.result > 0xffffffff);
+  }
+}

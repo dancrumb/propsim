@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Box, Text, useStdout, useInput } from "ink";
 import { SystemClock } from "./SystemClock.js";
 import { Hub } from "./Hub.js";
@@ -8,7 +8,7 @@ import CogsDisplay from "./ui/CogsDisplay.js";
 import { MainRam } from "./MainRam.js";
 import { Cog } from "./Cog.js";
 import { SystemCounter } from "./SystemCounter.js";
-import { Gpio } from "./Gpio.js";
+import RunControl from "./ui/RunControl.js";
 
 const systemClock = new SystemClock();
 const systemCounter = new SystemCounter(systemClock);
@@ -16,14 +16,31 @@ const mainRam = new MainRam("./test.bin");
 const hub = new Hub(systemClock, 8, mainRam);
 const cogs = Array.from(
   { length: 8 },
-  (_, i) => new Cog(systemClock, hub, systemCounter, new Gpio(), i)
+  (_, i) => new Cog(systemClock, hub, systemCounter, i)
 );
 
-cogs[0]?.start(10, 0);
+cogs[0]?.start(0x18, 0x18);
 
 export default function Demo() {
   const { stdout } = useStdout();
   const [currentCog, setCurrentCog] = React.useState(0);
+  const runningId = useRef<NodeJS.Timeout | null>(null);
+
+  const handleRunControlChange = React.useCallback(
+    (state: "running" | "paused") => {
+      if (state === "running") {
+        runningId.current = setInterval(() => {
+          systemClock.stepForward(1);
+        }, 500);
+      } else {
+        if (runningId.current) {
+          clearInterval(runningId.current);
+          runningId.current = null;
+        }
+      }
+    },
+    []
+  );
 
   useInput((input) => {
     if (input === "t") {
@@ -38,24 +55,29 @@ export default function Demo() {
       height={stdout.rows}
       width={stdout.columns}
       borderStyle={"double"}
-      flexDirection="row"
+      flexDirection="column"
       paddingX={1}
     >
-      <Box flexDirection="column">
-        <Box
-          flexDirection="column"
-          marginBottom={1}
-          width={7}
-          alignItems="center"
-        >
-          <HubDisplay hub={hub} />
-          <Box>
-            <Text>Hub</Text>
+      <Box flexDirection="row">
+        <Box flexDirection="column">
+          <Box
+            flexDirection="column"
+            marginBottom={1}
+            width={7}
+            alignItems="center"
+          >
+            <HubDisplay hub={hub} />
+            <Box>
+              <Text>Hub</Text>
+            </Box>
           </Box>
+          <SystemClockDisplay systemClock={systemClock} />
         </Box>
-        <SystemClockDisplay systemClock={systemClock} />
+        <CogsDisplay currentCog={currentCog} cogs={cogs} />
       </Box>
-      <CogsDisplay currentCog={currentCog} cogs={cogs} />
+      <Box flexDirection="row" justifyContent="center" width={"100%"}>
+        <RunControl onChangeState={handleRunControlChange} />
+      </Box>
     </Box>
   );
 }

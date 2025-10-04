@@ -6,44 +6,51 @@ export default function RamDisplay({
   ram,
   size = 16,
   pc,
+  selected = 0,
 }: {
   ram: CogRam;
   size?: number;
   pc: number;
+  selected?: number;
 }) {
   const [currentOffset, setCurrentOffset] = React.useState(0);
-  const [selected, setSelected] = React.useState(0);
   const rows: ReactElement[] = [];
 
-  useInput((input, key) => {
-    if (key.downArrow) {
-      setSelected((s) => Math.min(s + 1, size - 1));
-    } else if (key.upArrow) {
-      setSelected((s) => Math.max(s - 1, 0));
+  React.useEffect(() => {
+    if (pc < currentOffset) {
+      setCurrentOffset(pc);
+    } else if (pc >= currentOffset + size) {
+      setCurrentOffset(pc - size + 1);
     }
-  });
+  }, [pc, currentOffset, size]);
 
   for (let i = currentOffset; i < currentOffset + size; i += 1) {
     rows.push(
-      <Box
-        key={i}
-        flexDirection="row"
-        backgroundColor={selected === i ? "cyanBright" : undefined}
-      >
-        <Box width={6}>
-          <Text>{i.toString(16).toUpperCase().padStart(4, "0")}</Text>
+      <Box key={i} flexDirection="row">
+        <Box
+          key={i}
+          flexDirection="row"
+          backgroundColor={selected === i ? "cyanBright" : undefined}
+        >
+          <Box width={4}>
+            <Text>{i.toString(16).toUpperCase().padStart(4, "0")}</Text>
+          </Box>
+          <Box width={2} alignItems="flex-start">
+            <Text>:</Text>
+          </Box>
+          <Box width={8}>
+            <Text>
+              {ram.readURegister(i).toString(16).toUpperCase().padStart(8, "0")}
+            </Text>
+          </Box>
         </Box>
-        <Box width={1}>
-          <Text>:</Text>
-        </Box>
-        <Box width={20}>
-          <Text>
-            {ram.readURegister(i).toString(16).toUpperCase().padStart(8, "0")}
-            {i === pc && <Text color="red"> &lt;-- PC</Text>}
-          </Text>
-        </Box>
+        <Box>{i === pc && <Text color="red"> &lt;-- PC</Text>}</Box>
       </Box>
     );
   }
-  return <Box flexDirection="column">{rows}</Box>;
+  return (
+    <Box flexDirection="column" paddingX={1} height={"100%"} overflow="hidden">
+      {rows}
+    </Box>
+  );
 }

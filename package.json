@@ -1,6 +1,7 @@
 {
   "type": "module",
   "dependencies": {
+    "ansi-regex": "^6.2.2",
     "ink": "^6.3.1",
     "observable-hooks": "^4.2.4",
     "react": "^19.1.1",
@@ -8,6 +9,7 @@
     "ts-essentials": "^10.1.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.2",
+    "unicoderegexp": "^0.4.1",
     "vitest": "^3.2.4"
   },
   "devDependencies": {

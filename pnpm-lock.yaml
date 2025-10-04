@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      ansi-regex:
+        specifier: ^6.2.2
+        version: 6.2.2
       ink:
         specifier: ^6.3.1
         version: 6.3.1(@types/react@19.1.16)(react@19.1.1)
@@ -29,6 +32,9 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
+      unicoderegexp:
+        specifier: ^0.4.1
+        version: 0.4.1
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.6.0)(tsx@4.20.6)
@@ -690,6 +696,9 @@ packages:
   undici-types@7.13.0:
     resolution: {integrity: sha512-Ov2Rr9Sx+fRgagJ5AX0qvItZG/JKKoBRAVITs1zk7IqZGTJUwgUr7qoYBpWwakpWilTZFM98rG/AFRocu10iIQ==}
 
+  unicoderegexp@0.4.1:
+    resolution: {integrity: sha512-ydh8D5mdd2ldTS25GtZJEgLciuF0Qf2n3rwPhonELk3HioX201ClYGvZMc1bCmx6nblZiADQwbMWekeIqs51qw==}
+
   vite-node@3.2.4:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
@@ -1319,6 +1328,8 @@ snapshots:
   typescript@5.9.2: {}
 
   undici-types@7.13.0: {}
+
+  unicoderegexp@0.4.1: {}
 
   vite-node@3.2.4(@types/node@24.6.0)(tsx@4.20.6):
     dependencies:

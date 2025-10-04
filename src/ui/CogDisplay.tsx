@@ -1,9 +1,10 @@
 import React from "react";
-import { Box, Text } from "ink";
-import type { CogRam } from "../CogRam.js";
+import { Box, Text, useInput } from "ink";
 import RamDisplay from "./RamDisplay.js";
 import { Cog } from "../Cog.js";
 import { useObservableState } from "observable-hooks";
+import { from, mergeMap } from "rxjs";
+import { renderOperation } from "../Operation.js";
 
 export default function CogDisplay({
   cog,
@@ -14,6 +15,22 @@ export default function CogDisplay({
 }) {
   const cogRam = cog.getRam();
   const pc = useObservableState(cog.pc$, 0);
+  const [selected, setSelected] = React.useState(0);
+  const size = 16;
+
+  const currentOperation$ = useObservableState(
+    cog.currentOperation$.pipe(mergeMap((op) => op?.operation ?? from([null]))),
+    null
+  );
+
+  useInput((_input, key) => {
+    if (key.downArrow) {
+      setSelected((s) => Math.min(s + 1, size - 1));
+    } else if (key.upArrow) {
+      setSelected((s) => Math.max(s - 1, 0));
+    }
+  });
+
   return (
     <Box
       margin={0}
@@ -27,8 +44,18 @@ export default function CogDisplay({
           <Text>Cog {cog.id}</Text>
         </Box>
       </Box>
-      <Box>
-        <RamDisplay ram={cogRam} size={16} pc={pc} />
+      <Box flexDirection="row" width={"100%"}>
+        <Box>
+          <RamDisplay ram={cogRam} size={size} pc={pc} selected={selected} />
+        </Box>
+        <Box flexDirection="column">
+          <Box>
+            <Text>Running? {cog.isRunning() ? "Yes" : "No"}</Text>
+          </Box>
+          <Box>
+            <Text>Current Operation: {renderOperation(currentOperation$)}</Text>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
