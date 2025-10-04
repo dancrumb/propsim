@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { CogRam } from "../../src/CogRam.js";
-import { CogFlags } from "../../src/CogFlags.js";
+import { CogFlags } from "../../src/chip/CogFlags.js";
 import { ADDS } from "../../src/operation-implementations/adds.js";
 
 describe("ADDS", () => {

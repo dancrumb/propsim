@@ -1,13 +1,13 @@
 import React, { useRef } from "react";
 import { Box, Text, useStdout, useInput } from "ink";
-import { SystemClock } from "./SystemClock.js";
-import { Hub } from "./Hub.js";
+import { SystemClock } from "./chip/SystemClock.js";
+import { Hub } from "./chip/Hub.js";
 import HubDisplay from "./ui/HubDisplay.js";
 import SystemClockDisplay from "./ui/SystemClockDisplay.js";
 import CogsDisplay from "./ui/CogsDisplay.js";
-import { MainRam } from "./MainRam.js";
-import { Cog } from "./Cog.js";
-import { SystemCounter } from "./SystemCounter.js";
+import { MainRam } from "./chip/MainRam.js";
+import { Cog } from "./chip/Cog.js";
+import { SystemCounter } from "./chip/SystemCounter.js";
 import RunControl, { type RunSpeed } from "./ui/RunControl.js";
 
 const systemClock = new SystemClock();

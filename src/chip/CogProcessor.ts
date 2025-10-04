@@ -1,11 +1,11 @@
 import { CogRam } from "./CogRam.js";
 import { CogRegisters } from "./CogRegisters.js";
-import { decomposeOpcode } from "./decomposeOpcode.js";
-import type { Operation } from "./Operation.js";
+import { decomposeOpcode } from "../decomposeOpcode.js";
+import type { Operation } from "../Operation.js";
 import type { SystemClock } from "./SystemClock.js";
 import type { SystemCounter } from "./SystemCounter.js";
 
-const processOperation = (operation: Operation) => Promise.resolve(1);
+const processOperation = () => Promise.resolve(1);
 
 export class CogProcessor {
   private programCounter: number = 0;
@@ -19,7 +19,7 @@ export class CogProcessor {
   ) {
     this.cogRegisters = new CogRegisters(systemCounter);
     this.systemClock.tick$.subscribe({
-      next: (tick) => {
+      next: () => {
         this.executeCycle();
       },
     });

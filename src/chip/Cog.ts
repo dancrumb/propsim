@@ -1,12 +1,12 @@
 import type { Hub } from "./Hub.js";
 import type { SystemClock } from "./SystemClock.js";
-import { CogRam } from "./CogRam.js";
+import { CogRam } from "../CogRam.js";
 import { CogRegisters } from "./CogRegisters.js";
-import type { SystemCounter } from "./SystemCounter.js";
+import type { SystemCounter } from "../SystemCounter.js";
 
 import { CogFlags } from "./CogFlags.js";
-import { OperationFactory } from "./operation-implementations/OperationFactory.js";
-import type { BaseOperation } from "./operation-implementations/BaseOperation.js";
+import { OperationFactory } from "../operation-implementations/OperationFactory.js";
+import type { BaseOperation } from "../operation-implementations/BaseOperation.js";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 
 type PipelinePhase =

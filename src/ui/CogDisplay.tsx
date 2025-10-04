@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Text, useInput } from "ink";
 import RamDisplay from "./RamDisplay.js";
-import { Cog } from "../Cog.js";
+import { Cog } from "../chip/Cog.js";
 import { useObservableState } from "observable-hooks";
 import { from, mergeMap } from "rxjs";
 import { renderOperation } from "../Operation.js";

@@ -6,7 +6,7 @@ export class SUBOperation extends BaseOperation {
     dest: { read: "address", write: "value" },
   } as const;
 
-  constructor(registerValue: number, cog: import("../Cog.js").Cog) {
+  constructor(registerValue: number, cog: import("../chip/Cog.js").Cog) {
     super(registerValue, cog, false);
   }
   override performOperation(): Promise<void> {

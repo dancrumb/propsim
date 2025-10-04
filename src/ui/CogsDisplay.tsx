@@ -1,8 +1,7 @@
 import React from "react";
 import { Box, Text } from "ink";
 import CogDisplay from "./CogDisplay.js";
-import { CogRam } from "../CogRam.js";
-import type { Cog } from "../Cog.js";
+import type { Cog } from "../chip/Cog.js";
 
 export default function CogsDisplay({
   currentCog,

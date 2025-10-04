@@ -1,5 +1,5 @@
 import { BehaviorSubject } from "rxjs";
-import type { Cog } from "../Cog.js";
+import type { Cog } from "../chip/Cog.js";
 import { decomposeOpcode } from "../decomposeOpcode.js";
 import type { Operation } from "../Operation.js";
 

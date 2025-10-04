@@ -1,6 +1,3 @@
-import type { CogFlags } from "../CogFlags.js";
-import type { CogRam } from "../CogRam.js";
-import { type Operation } from "../Operation.js";
 import { BaseOperation } from "./BaseOperation.js";
 
 export class ABSOperation extends BaseOperation {

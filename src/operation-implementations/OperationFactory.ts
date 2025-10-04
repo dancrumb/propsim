@@ -1,4 +1,4 @@
-import type { Cog } from "../Cog.js";
+import type { Cog } from "../chip/Cog.js";
 import { type OpCode } from "../opcodes.js";
 import { ABSOperation } from "./abs.js";
 import { ABSNEGOperation } from "./absneg.js";

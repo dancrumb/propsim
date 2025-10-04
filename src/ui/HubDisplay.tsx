@@ -1,5 +1,5 @@
 import { useObservableState } from "observable-hooks";
-import { Hub } from "../Hub.js";
+import { Hub } from "../chip/Hub.js";
 import { Box, Text } from "ink";
 import React from "react";
 

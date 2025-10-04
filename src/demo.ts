@@ -1,4 +1,4 @@
-import { MainRam } from "./MainRam.js";
+import { MainRam } from "./chip/MainRam.js";
 import { CogRam } from "./CogRam.js";
 
 const ram = new MainRam("test.bin");

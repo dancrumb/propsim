@@ -1,5 +1,3 @@
-import { readFileSync } from "fs";
-import { MainRam } from "./MainRam.js";
 import { CogRam } from "./CogRam.js";
 import { decomposeOpcode } from "./decomposeOpcode.js";
 

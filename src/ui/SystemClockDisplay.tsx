@@ -1,8 +1,7 @@
 import { useObservableState } from "observable-hooks";
-import { Hub } from "../Hub.js";
 import { Box, Text } from "ink";
 import React from "react";
-import { SystemClock } from "../SystemClock.js";
+import { SystemClock } from "../chip/SystemClock.js";
 
 export default function SystemClockDisplay({
   systemClock,

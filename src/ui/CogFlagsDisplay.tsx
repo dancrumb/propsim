@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Text } from "ink";
-import type { Cog } from "../Cog.js";
+import type { Cog } from "../chip/Cog.js";
 import { useObservableState } from "observable-hooks";
 
 export default function RunControl({ cog }: { cog: Cog }) {
