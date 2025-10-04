@@ -6,6 +6,7 @@ export const SRC_MASK = 0b0000_0000_0000_0000_0000_0001_1111_1111;
 import { INSTR_TO_OP } from "./opcodes.js";
 import type { Operation } from "./Operation.js";
 import type { OpCode } from "./opcodes.js";
+import { CON } from "./condition.js";
 
 export function decomposeOpcode(opcode: number): Operation | null {
   const inst = (opcode & INSTR_MASK) >>> 26;
@@ -17,7 +18,7 @@ export function decomposeOpcode(opcode: number): Operation | null {
     return {
       instr: "NOP",
       zcri: 0,
-      con: 0,
+      con: "NEVER",
       dest: 0,
       src: 0,
     };
@@ -41,7 +42,7 @@ export function decomposeOpcode(opcode: number): Operation | null {
   return {
     instr,
     zcri,
-    con,
+    con: CON[con as keyof typeof CON]!,
     dest,
     src,
   };

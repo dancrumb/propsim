@@ -8,11 +8,11 @@ import CogsDisplay from "./ui/CogsDisplay.js";
 import { MainRam } from "./MainRam.js";
 import { Cog } from "./Cog.js";
 import { SystemCounter } from "./SystemCounter.js";
-import RunControl from "./ui/RunControl.js";
+import RunControl, { type RunSpeed } from "./ui/RunControl.js";
 
 const systemClock = new SystemClock();
 const systemCounter = new SystemCounter(systemClock);
-const mainRam = new MainRam("./test.bin");
+const mainRam = new MainRam("./simple.binary");
 const hub = new Hub(systemClock, 8, mainRam);
 const cogs = Array.from(
   { length: 8 },
@@ -26,21 +26,20 @@ export default function Demo() {
   const [currentCog, setCurrentCog] = React.useState(0);
   const runningId = useRef<NodeJS.Timeout | null>(null);
 
-  const handleRunControlChange = React.useCallback(
-    (state: "running" | "paused") => {
-      if (state === "running") {
-        runningId.current = setInterval(() => {
+  const handleRunControlChange = React.useCallback((state: RunSpeed) => {
+    if (runningId.current) {
+      clearInterval(runningId.current);
+      runningId.current = null;
+    }
+    if (state !== "paused") {
+      runningId.current = setInterval(
+        () => {
           systemClock.stepForward(1);
-        }, 500);
-      } else {
-        if (runningId.current) {
-          clearInterval(runningId.current);
-          runningId.current = null;
-        }
-      }
-    },
-    []
-  );
+        },
+        state === "x1" ? 500 : 250
+      );
+    }
+  }, []);
 
   useInput((input) => {
     if (input === "t") {

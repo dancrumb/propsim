@@ -10,10 +10,25 @@ export type OpDescription = {
   signed?: boolean;
 };
 
+export type RegisterRole = {
+  read: "value" | "address";
+  write: "value" | "address" | "none";
+};
+
 export class BaseOperation {
   protected srcValue: number = 0;
   protected destValue: number = 0;
+
+  protected roles: {
+    src: RegisterRole;
+    dest: RegisterRole;
+  } = {
+    src: { read: "value", write: "none" },
+    dest: { read: "value", write: "value" },
+  };
+
   protected result: number = 0;
+  protected writeResult: boolean = true;
   public readonly operation = new BehaviorSubject<Operation | null>(null);
 
   constructor(
@@ -22,6 +37,9 @@ export class BaseOperation {
     public signedReads: boolean
   ) {
     this.operation.next(decomposeOpcode(registerValue));
+    process.stderr.write(
+      `Decoded operation: ${JSON.stringify(this.operation.value)}\n`
+    );
   }
 
   get zcri() {
@@ -57,15 +75,21 @@ export class BaseOperation {
     if (op === null) {
       throw new Error("No operation to resolve");
     }
-    this.srcValue = this.iFlag
-      ? op.src
-      : this.signedReads
-      ? this.cog.readRegister(op.src)
-      : this.cog.readURegister(op.src);
 
-    this.destValue = this.signedReads
-      ? this.cog.readRegister(op.dest)
-      : this.cog.readURegister(op.dest);
+    this.writeResult = this.rFlag;
+    this.srcValue =
+      this.roles.src.read === "value"
+        ? op.src
+        : this.signedReads
+        ? this.cog.readRegister(op.src)
+        : this.cog.readURegister(op.src);
+
+    this.destValue =
+      this.roles.dest.read === "value"
+        ? op.dest
+        : this.signedReads
+        ? this.cog.readRegister(op.dest)
+        : this.cog.readURegister(op.dest);
   }
 
   performOperation(): Promise<void> {
@@ -78,29 +102,36 @@ export class BaseOperation {
       throw new Error("No operation to resolve");
     }
 
-    if (this.rFlag) {
-      if (this.signedReads) {
-        this.cog.writeRegister(
-          this.destValue,
-          this.signedReads
-            ? this.result & 0xffffffff
-            : (this.result & 0xffffffff) >>> 0
-        );
-      } else {
-        this.cog.writeURegister(
-          this.destValue,
-          this.signedReads
-            ? this.result & 0xffffffff
-            : (this.result & 0xffffffff) >>> 0
-        );
-      }
+    process.stderr.write(
+      `Executing operation: ${JSON.stringify(op)}\n` +
+        `  SrcValue: ${this.srcValue} DestValue: ${this.destValue}; ZCRI: ${this.zFlag} ${this.cFlag} ${this.iFlag} ${this.rFlag}\n`
+    );
 
-      if (this.zFlag) {
-        this.setZ();
+    await this.performOperation();
+
+    if (this.writeResult) {
+      const writeAddress =
+        this.roles.dest.write === "address" ? this.destValue : op.dest;
+
+      process.stderr.write(
+        `  Writing result ${this.result & 0xffffffff} to ${writeAddress} (as ${
+          this.signedReads ? "signed" : "unsigned"
+        })\n`
+      );
+      if (this.signedReads) {
+        this.cog.writeRegister(writeAddress, this.result & 0xffffffff);
+      } else {
+        this.cog.writeURegister(writeAddress, this.result & 0xffffffff);
       }
-      if (this.cFlag) {
-        this.setC();
-      }
+    }
+
+    if (this.zFlag) {
+      process.stderr.write(`  Setting Z flag\n`);
+      this.setZ();
+    }
+    if (this.cFlag) {
+      process.stderr.write(`  Setting C flag\n`);
+      this.setC();
     }
 
     return Promise.resolve();

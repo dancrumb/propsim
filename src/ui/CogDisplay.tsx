@@ -5,6 +5,7 @@ import { Cog } from "../Cog.js";
 import { useObservableState } from "observable-hooks";
 import { from, mergeMap } from "rxjs";
 import { renderOperation } from "../Operation.js";
+import CogFlagsDisplay from "./CogFlagsDisplay.js";
 
 export default function CogDisplay({
   cog,
@@ -48,12 +49,15 @@ export default function CogDisplay({
         <Box>
           <RamDisplay ram={cogRam} size={size} pc={pc} selected={selected} />
         </Box>
-        <Box flexDirection="column">
+        <Box flexDirection="column" gap={2}>
           <Box>
             <Text>Running? {cog.isRunning() ? "Yes" : "No"}</Text>
           </Box>
           <Box>
             <Text>Current Operation: {renderOperation(currentOperation$)}</Text>
+          </Box>
+          <Box>
+            <CogFlagsDisplay cog={cog} />
           </Box>
         </Box>
       </Box>

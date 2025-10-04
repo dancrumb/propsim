@@ -1,16 +1,22 @@
 import React from "react";
 import { Box, useInput, Text } from "ink";
 
+export type RunSpeed = "x1" | "x2" | "paused";
+
 export default function RunControl({
   onChangeState,
 }: {
-  onChangeState?: (state: "running" | "paused") => void;
+  onChangeState?: (state: RunSpeed) => void;
 }) {
-  const [state, setState] = React.useState<"running" | "paused">("paused");
+  const [state, setState] = React.useState<RunSpeed>("paused");
 
-  useInput((input, key) => {
+  useInput((input) => {
     if (input === ">") {
-      setState("running");
+      if (state === "x1") {
+        setState("x2");
+      } else {
+        setState("x1");
+      }
     } else if (input === "|") {
       setState("paused");
     }
@@ -35,9 +41,17 @@ export default function RunControl({
         borderStyle={"round"}
         width={5}
         justifyContent="center"
-        borderColor={state === "running" ? "brightWhite" : "gray"}
+        borderColor={state === "x1" ? "brightWhite" : "gray"}
       >
-        <Text color={state === "running" ? "brightWhite" : "gray"}>{"▷"}</Text>
+        <Text color={state === "x1" ? "brightWhite" : "gray"}>{"▷"}</Text>
+      </Box>
+      <Box
+        borderStyle={"round"}
+        width={5}
+        justifyContent="center"
+        borderColor={state === "x2" ? "brightWhite" : "gray"}
+      >
+        <Text color={state === "x2" ? "brightWhite" : "gray"}>{"»"}</Text>
       </Box>
     </Box>
   );

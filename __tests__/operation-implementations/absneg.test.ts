@@ -23,7 +23,7 @@ describe("ABSNEG", () => {
     );
 
     expect(cogRam.readRegister(0x30)).toBe(-12345);
-    expect(cogFlags.Z).toBe(false);
+    expect(cogFlags._Z).toBe(false);
     expect(cogFlags.C).toBe(true);
   });
   it("should correctly compute the absolute value and set flags for a positive number", async () => {
@@ -45,7 +45,7 @@ describe("ABSNEG", () => {
     );
 
     expect(cogRam.readRegister(0x30)).toBe(-12345);
-    expect(cogFlags.Z).toBe(false);
+    expect(cogFlags._Z).toBe(false);
     expect(cogFlags.C).toBe(false);
   });
   it("should correctly compute the absolute value and set flags for zero", async () => {
@@ -67,7 +67,7 @@ describe("ABSNEG", () => {
     );
 
     expect(cogRam.readRegister(0x30)).toBe(0);
-    expect(cogFlags.Z).toBe(true);
+    expect(cogFlags._Z).toBe(true);
     expect(cogFlags.C).toBe(false);
   });
   it("should correctly compute the absolute value and set flags for an immediate value", async () => {
@@ -89,7 +89,7 @@ describe("ABSNEG", () => {
     );
 
     expect(cogRam.readRegister(0x30)).toBe(-0x50);
-    expect(cogFlags.Z).toBe(false);
+    expect(cogFlags._Z).toBe(false);
     expect(cogFlags.C).toBe(false);
   });
 });

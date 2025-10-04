@@ -1,61 +1,344 @@
+CONDITIONS: {"0":"NEVER","1":"A","2":"NC_AND_Z","3":"AE","4":"C_AND_NZ","5":"NE","6":"C_NE_Z","7":"NC_OR_NZ","8":"C_AND_Z","9":"C_EQ_Z","10":"E","11":"NC_OR_Z","12":"B","13":"C_OR_NZ","14":"BE","15":"ALWAYS"}
 Each child in a list should have a unique "key" prop.
 
 Check the render method of `Box`. It was passed a child from CogsDisplay. See https://react.dev/link/warning-keys for more information.
-[COG 0] Phase: [object Object] PC: 0 (Running? true)
-[COG 0] Phase: [object Object] PC: 0 (Running? true)
-[COG 0] Phase: [object Object] PC: 0 (Running? true)
-[COG 0] Phase: [object Object] PC: 1 (Running? true)
-[COG 0] Phase: [object Object] PC: 1 (Running? true)
-[COG 0] Phase: [object Object] PC: 1 (Running? true)
-[COG 0] Phase: [object Object] PC: 1 (Running? true)
-[COG 0] Phase: [object Object] PC: 2 (Running? true)
-[COG 0] Phase: [object Object] PC: 2 (Running? true)
-[COG 0] Phase: [object Object] PC: 2 (Running? true)
-[COG 0] Phase: [object Object] PC: 2 (Running? true)
-[COG 0] Phase: [object Object] PC: 3 (Running? true)
-[COG 0] Phase: [object Object] PC: 3 (Running? true)
-[COG 0] Phase: [object Object] PC: 3 (Running? true)
-[COG 0] Phase: [object Object] PC: 3 (Running? true)
-[COG 0] Phase: [object Object] PC: 4 (Running? true)
-[COG 0] Phase: [object Object] PC: 4 (Running? true)
-[COG 0] Phase: [object Object] PC: 4 (Running? true)
-[COG 0] Phase: [object Object] PC: 4 (Running? true)
-[COG 0] Phase: [object Object] PC: 5 (Running? true)
-[COG 0] Phase: [object Object] PC: 5 (Running? true)
-[COG 0] Phase: [object Object] PC: 5 (Running? true)
-[COG 0] Phase: [object Object] PC: 5 (Running? true)
-[COG 0] Phase: [object Object] PC: 6 (Running? true)
-[COG 0] Phase: [object Object] PC: 6 (Running? true)
-[COG 0] Phase: [object Object] PC: 6 (Running? true)
-[COG 0] Phase: [object Object] PC: 6 (Running? true)
-[COG 0] Phase: [object Object] PC: 7 (Running? true)
-[COG 0] Phase: [object Object] PC: 7 (Running? true)
-[COG 0] Phase: [object Object] PC: 7 (Running? true)
-[COG 0] Phase: [object Object] PC: 7 (Running? true)
-[COG 0] Phase: [object Object] PC: 8 (Running? true)
-[COG 0] Phase: [object Object] PC: 8 (Running? true)
-[COG 0] Phase: [object Object] PC: 8 (Running? true)
-[COG 0] Phase: [object Object] PC: 8 (Running? true)
-[COG 0] Phase: [object Object] PC: 9 (Running? true)
-[COG 0] Phase: [object Object] PC: 9 (Running? true)
-[COG 0] Phase: [object Object] PC: 9 (Running? true)
-[COG 0] Phase: [object Object] PC: 9 (Running? true)
-[COG 0] Phase: [object Object] PC: 10 (Running? true)
-[COG 0] Phase: [object Object] PC: 10 (Running? true)
-[COG 0] Phase: [object Object] PC: 10 (Running? true)
-[COG 0] Phase: [object Object] PC: 10 (Running? true)
-[COG 0] Phase: [object Object] PC: 11 (Running? true)
-[COG 0] Phase: [object Object] PC: 11 (Running? true)
-[COG 0] Phase: [object Object] PC: 11 (Running? true)
-[COG 0] Phase: [object Object] PC: 11 (Running? true)
-[COG 0] Phase: [object Object] PC: 12 (Running? true)
-[COG 0] Phase: [object Object] PC: 12 (Running? true)
-[COG 0] Phase: [object Object] PC: 12 (Running? true)
-[COG 0] Phase: [object Object] PC: 12 (Running? true)
-[COG 0] Phase: [object Object] PC: 13 (Running? true)
-[COG 0] Phase: [object Object] PC: 13 (Running? true)
-[COG 0] Phase: [object Object] PC: 13 (Running? true)
-[COG 0] Phase: [object Object] PC: 13 (Running? true)
-[COG 0] Phase: [object Object] PC: 14 (Running? true)
-[COG 0] Phase: [object Object] PC: 14 (Running? true)
-[COG 0] Phase: [object Object] PC: 14 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 15; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 14 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 14; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 13 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 13; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 12 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 12; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 11 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 11; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 10 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 10; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 9 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 9; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 8 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 8; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 7 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 7; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 6 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 6; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 5 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 5; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 4 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 4; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 3 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 3; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 2 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 2; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 1 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 0
+[COG 0] Phase: read PC: 0 (Running? true)
+[COG 0] Phase: resolve PC: 0 (Running? true)
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+Creating operation for instruction SUB with condition ALWAYS
+Decoded operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+[COG 0] Phase: resolved PC: 0 (Running? true)
+Executing operation: {"instr":"SUB","zcri":11,"con":"ALWAYS","dest":3,"src":1}
+  SrcValue: 1 DestValue: 1; ZCRI: true false true true
+[COG 0] Phase: executing PC: 0 (Running? true)
+  Writing result 0 to 3 (as unsigned)
+  Setting Z flag
+[COG 0] Setting PC from 0 to 1
+[COG 0] Phase: read PC: 1 (Running? true)
+[COG 0] Phase: resolve PC: 1 (Running? true)
+Decoded operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+Creating operation for instruction JMP with condition NE
+[COG 0] Phase: resolved PC: 1 (Running? true)
+Executing operation: {"instr":"JMP","zcri":1,"con":"NE","dest":0,"src":0}
+  SrcValue: 0 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 1 (Running? true)
+[COG 0] Setting PC from 1 to 2
+[COG 0] Phase: read PC: 2 (Running? true)
+[COG 0] Phase: resolve PC: 2 (Running? true)
+Decoded operation: {"instr":"COGSTOP","zcri":1,"con":"ALWAYS","dest":0,"src":3}
+Creating operation for instruction COGSTOP with condition ALWAYS
+Decoded operation: {"instr":"COGSTOP","zcri":1,"con":"ALWAYS","dest":0,"src":3}
+[COG 0] Phase: resolved PC: 2 (Running? true)
+Executing operation: {"instr":"COGSTOP","zcri":1,"con":"ALWAYS","dest":0,"src":3}
+  SrcValue: 3 DestValue: 0; ZCRI: false false true false
+[COG 0] Phase: executing PC: 2 (Running? true)
+[COG 0] Setting PC from 2 to 3
+[COG 0] Phase: read PC: 3 (Running? true)
+[COG 0] Phase: resolve PC: 3 (Running? true)

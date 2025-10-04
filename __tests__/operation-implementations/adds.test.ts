@@ -24,7 +24,7 @@ describe("ADDS", () => {
     );
 
     expect(cogRam.readRegister(0x30)).toBe(21);
-    expect(cogFlags.Z).toBe(false);
+    expect(cogFlags._Z).toBe(false);
     expect(cogFlags.C).toBe(false);
   });
   it("should correctly compute the sum and set flags for a zero result", async () => {
@@ -47,7 +47,7 @@ describe("ADDS", () => {
     );
 
     expect(cogRam.readRegister(0x30)).toBe(0);
-    expect(cogFlags.Z).toBe(true);
+    expect(cogFlags._Z).toBe(true);
     expect(cogFlags.C).toBe(false);
   });
   it("should correctly compute the sum and set flags for an overflow", async () => {
@@ -70,7 +70,7 @@ describe("ADDS", () => {
     );
 
     expect(cogRam.readRegister(0x30)).toBe(5);
-    expect(cogFlags.Z).toBe(false);
+    expect(cogFlags._Z).toBe(false);
     expect(cogFlags.C).toBe(false);
   });
   it("should correctly compute the absolute value and set flags for an immediate value", async () => {
@@ -92,7 +92,7 @@ describe("ADDS", () => {
     );
 
     expect(cogRam.readRegister(0x30)).toBe(0x50 + 11);
-    expect(cogFlags.Z).toBe(false);
+    expect(cogFlags._Z).toBe(false);
     expect(cogFlags.C).toBe(false);
   });
 });

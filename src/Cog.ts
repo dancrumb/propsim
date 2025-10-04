@@ -4,10 +4,10 @@ import { CogRam } from "./CogRam.js";
 import { CogRegisters } from "./CogRegisters.js";
 import type { SystemCounter } from "./SystemCounter.js";
 
-import { BehaviorSubject } from "rxjs";
 import { CogFlags } from "./CogFlags.js";
 import { OperationFactory } from "./operation-implementations/OperationFactory.js";
 import type { BaseOperation } from "./operation-implementations/BaseOperation.js";
+import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 
 type PipelinePhase =
   | "read"
@@ -22,6 +22,8 @@ export class Cog {
   private registers: CogRegisters;
   private running: boolean = false;
   private flags = new CogFlags();
+
+  public readonly flags$: Observable<{ Z: boolean; C: boolean }>;
 
   private pipelinePhase = new BehaviorSubject<PipelinePhase>("read");
 
@@ -52,11 +54,12 @@ export class Cog {
             this.currentOperation$?.next(
               OperationFactory.createOperation(this.instructionRegister, this)
             );
+            this.currentOperation$.value?.resolve();
             this.pipelinePhase.next("resolved");
             break;
           }
           case "resolved": {
-            if (this.currentOperation$?.value !== null) {
+            if (this.currentOperation$.value !== null) {
               this.pipelinePhase.next("executing");
               this.currentOperation$?.value.execute().then(() => {
                 this.pipelinePhase.next("writeback");
@@ -65,7 +68,7 @@ export class Cog {
             break;
           }
           case "writeback": {
-            this.currentOperation$?.value?.updatePC();
+            this.currentOperation$.value?.updatePC();
             this.pipelinePhase.next("read");
             break;
           }
@@ -74,12 +77,14 @@ export class Cog {
           }
         }
         process.stderr.write(
-          `[COG ${this.id}] Phase: ${this.pipelinePhase ?? "WTF"} PC: ${
-            this._pc.value
-          } (Running? ${this.running})\n`
+          `[COG ${this.id}] Phase: ${
+            this.pipelinePhase.getValue() ?? "WTF"
+          } PC: ${this._pc.value} (Running? ${this.running})\n`
         );
       },
     });
+
+    this.flags$ = combineLatest({ Z: this.flags.Z$, C: this.flags.C$ });
   }
 
   start(par: number, offset: number = 0) {
@@ -135,7 +140,11 @@ export class Cog {
   }
 
   setPC(value: number) {
-    this._pc.next(value & 0x1ff);
+    const newPC = value & 0x1ff;
+    process.stderr.write(
+      `[COG ${this.id}] Setting PC from ${this._pc.getValue()} to ${newPC}\n`
+    );
+    this._pc.next(newPC);
   }
 
   updateZFlag(set: boolean) {
@@ -143,5 +152,13 @@ export class Cog {
   }
   updateCFlag(set: boolean) {
     this.flags.C = set;
+  }
+
+  get Z() {
+    return this.flags.Z;
+  }
+
+  get C() {
+    return this.flags.C;
   }
 }
