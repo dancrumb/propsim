@@ -10,6 +10,7 @@ import { ADDABSOperation } from "./addabs.js";
 import { CALLOperation } from "./call.js";
 import { JMPOperation } from "./jmp.js";
 import { SUBOperation } from "./sub.js";
+import { COGSTOPOperation } from "./cogstop.js";
 
 const OPERATIONS: Partial<Record<OpCode | "NOP", typeof BaseOperation>> = {
   ABS: ABSOperation,
@@ -17,6 +18,7 @@ const OPERATIONS: Partial<Record<OpCode | "NOP", typeof BaseOperation>> = {
   ADDABS: ADDABSOperation,
   ADD: ADDOperation,
   CALL: CALLOperation,
+  COGSTOP: COGSTOPOperation,
   JMP: JMPOperation,
   NOP: NOPOperation,
   SUB: SUBOperation,

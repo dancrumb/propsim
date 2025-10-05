@@ -3,14 +3,21 @@ import { Hub } from "../chip/Hub.js";
 import { Box, Text } from "ink";
 import React from "react";
 
-const NumberBox = ({ number }: { number: number }) => (
+const NumberBox = ({
+  number,
+  pending,
+}: {
+  number: number;
+  pending: boolean;
+}) => (
   <Box width={1} height={1}>
-    <Text>{number}</Text>
+    <Text color={pending ? "brightwhite" : "gray"}>{number}</Text>
   </Box>
 );
 
 export default function HubDisplay({ hub }: { hub: Hub }) {
   const currentHub = useObservableState(hub.currentHub$, 0);
+  const pendingOperations = useObservableState(hub.pendingOperations$, []);
 
   return (
     <Box
@@ -22,27 +29,27 @@ export default function HubDisplay({ hub }: { hub: Hub }) {
     >
       <Box width={5} height={5} flexDirection="column" position="absolute">
         <Box>
-          <NumberBox number={7} />
+          <NumberBox number={7} pending={pendingOperations[7] !== undefined} />
           <Box width={1} height={1}></Box>
-          <NumberBox number={0} />
+          <NumberBox number={0} pending={pendingOperations[0] !== undefined} />
           <Box width={1} height={1}></Box>
-          <NumberBox number={1} />
+          <NumberBox number={1} pending={pendingOperations[1] !== undefined} />
         </Box>
         <Box height={1} width={5}></Box>
         <Box>
-          <NumberBox number={6} />
+          <NumberBox number={6} pending={pendingOperations[6] !== undefined} />
           <Box width={1} height={1}></Box>
           <Box width={1} height={1}></Box>
           <Box width={1} height={1}></Box>
-          <NumberBox number={2} />
+          <NumberBox number={2} pending={pendingOperations[2] !== undefined} />
         </Box>
         <Box height={1} width={5}></Box>
         <Box>
-          <NumberBox number={5} />
+          <NumberBox number={5} pending={pendingOperations[5] !== undefined} />
           <Box width={1} height={1}></Box>
-          <NumberBox number={4} />
+          <NumberBox number={4} pending={pendingOperations[4] !== undefined} />
           <Box width={1} height={1}></Box>
-          <NumberBox number={3} />
+          <NumberBox number={3} pending={pendingOperations[3] !== undefined} />
         </Box>
       </Box>
       <Box width={5} height={5} flexDirection="column">

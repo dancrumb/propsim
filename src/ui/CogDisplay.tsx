@@ -15,6 +15,7 @@ export default function CogDisplay({
   hidden?: boolean;
 }) {
   const cogRam = cog.getRam();
+  const isRunning = useObservableState(cog.running$, cog.isRunning());
   const pc = useObservableState(cog.pc$, 0);
   const [selected, setSelected] = React.useState(0);
   const size = 16;
@@ -51,7 +52,7 @@ export default function CogDisplay({
         </Box>
         <Box flexDirection="column" gap={2}>
           <Box>
-            <Text>Running? {cog.isRunning() ? "Yes" : "No"}</Text>
+            <Text>Running? {isRunning ? "Yes" : "No"}</Text>
           </Box>
           <Box>
             <Text>Current Operation: {renderOperation(currentOperation$)}</Text>

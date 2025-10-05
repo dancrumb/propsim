@@ -18,6 +18,7 @@ export type RegisterRole = {
 export class BaseOperation {
   protected srcValue: number = 0;
   protected destValue: number = 0;
+  public readonly hubOperation: boolean = false;
 
   protected roles: {
     src: RegisterRole;

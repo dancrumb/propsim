@@ -1,8 +1,8 @@
 import type { Hub } from "./Hub.js";
 import type { SystemClock } from "./SystemClock.js";
-import { CogRam } from "../CogRam.js";
+import { CogRam } from "./CogRam.js";
 import { CogRegisters } from "./CogRegisters.js";
-import type { SystemCounter } from "../SystemCounter.js";
+import type { SystemCounter } from "./SystemCounter.js";
 
 import { CogFlags } from "./CogFlags.js";
 import { OperationFactory } from "../operation-implementations/OperationFactory.js";
@@ -20,7 +20,7 @@ export class Cog {
   private _pc = new BehaviorSubject(0);
   private ram = new CogRam();
   private registers: CogRegisters;
-  private running: boolean = false;
+  public readonly running$ = new BehaviorSubject<boolean>(false);
   private flags = new CogFlags();
 
   public readonly flags$: Observable<{ Z: boolean; C: boolean }>;
@@ -34,14 +34,16 @@ export class Cog {
 
   constructor(
     private systemClock: SystemClock,
-    private hub: Hub,
+    public readonly hub: Hub,
     systemCounter: SystemCounter,
     public readonly id: number
   ) {
     this.registers = new CogRegisters(systemCounter);
     this.systemClock.tick$.subscribe({
       next: () => {
-        if (!this.running) return;
+        if (!this.running$.getValue()) {
+          return;
+        }
         switch (this.pipelinePhase.value) {
           case "read": {
             this.instructionRegister = this.ram.readURegister(
@@ -61,10 +63,21 @@ export class Cog {
           case "resolved": {
             if (this.currentOperation$.value !== null) {
               this.pipelinePhase.next("executing");
+              if (this.currentOperation$.value.hubOperation) {
+                this.hub.requestHubOperation(
+                  this.id,
+                  this.currentOperation$.value
+                );
+                break;
+              }
               this.currentOperation$?.value.execute().then(() => {
                 this.pipelinePhase.next("writeback");
               });
             }
+            break;
+          }
+          case "executing": {
+            // waiting for execute to finish
             break;
           }
           case "writeback": {
@@ -73,13 +86,15 @@ export class Cog {
             break;
           }
           default: {
-            throw new Error(`Invalid pipeline phase: ${this.pipelinePhase}`);
+            throw new Error(
+              `Invalid pipeline phase: ${this.pipelinePhase.getValue()}`
+            );
           }
         }
         process.stderr.write(
           `[COG ${this.id}] Phase: ${
             this.pipelinePhase.getValue() ?? "WTF"
-          } PC: ${this._pc.value} (Running? ${this.running})\n`
+          } PC: ${this._pc.value} (Running? ${this.running$.getValue()})\n`
         );
       },
     });
@@ -88,9 +103,17 @@ export class Cog {
   }
 
   start(par: number, offset: number = 0) {
+    process.stderr.write(
+      `[COG ${this.id}] Starting at offset ${offset} and parameter ${par}\n`
+    );
     this.registers.par = par;
     this.ram.loadFromRam(this.hub.mainRamReader, offset);
-    this.running = true;
+    this.running$.next(true);
+  }
+
+  stop() {
+    process.stderr.write(`[COG ${this.id}] Stopping\n`);
+    this.running$.next(false);
   }
 
   getRam() {
@@ -102,7 +125,7 @@ export class Cog {
   }
 
   isRunning() {
-    return this.running;
+    return this.running$.getValue();
   }
 
   readRegister(index: number) {

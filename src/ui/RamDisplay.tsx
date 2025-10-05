@@ -1,6 +1,6 @@
-import React, { Component, type ReactElement } from "react";
-import { Box, Text, useInput } from "ink";
-import type { CogRam } from "../CogRam.js";
+import React, { type ReactElement } from "react";
+import { Box, Text } from "ink";
+import type { CogRam } from "../chip/CogRam.js";
 
 export default function RamDisplay({
   ram,
