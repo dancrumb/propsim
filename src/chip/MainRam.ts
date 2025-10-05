@@ -10,6 +10,10 @@ export class MainRam {
     fileBuf.copy(this.buf);
   }
 
+  writeLong(address: number, value: number) {
+    this.buf.writeInt32LE(value, address & 0xfc);
+  }
+
   readByte(address: number): number {
     return this.buf.readUInt8(address);
   }

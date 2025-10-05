@@ -8,7 +8,7 @@ import RunControl, { type RunSpeed } from "./ui/RunControl.js";
 import { Propeller } from "./chip/Propeller.js";
 import { inspect } from "util";
 
-const propeller = new Propeller("./simple.binary");
+const propeller = new Propeller("./test.bin");
 process.stderr.write(inspect(propeller.powerOn()) + "\n");
 
 const systemClock = propeller.systemClock;

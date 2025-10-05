@@ -8,6 +8,7 @@ import { CogFlags } from "./CogFlags.js";
 import { OperationFactory } from "../operation-implementations/OperationFactory.js";
 import type { BaseOperation } from "../operation-implementations/BaseOperation.js";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
+import { h16 } from "../utils/val-display.js";
 
 type PipelinePhase =
   | "read"
@@ -102,12 +103,14 @@ export class Cog {
     this.flags$ = combineLatest({ Z: this.flags.Z$, C: this.flags.C$ });
   }
 
-  start(par: number, offset: number = 0) {
+  start(par: number, address: number = 0) {
     process.stderr.write(
-      `[COG ${this.id}] Starting at offset ${offset} and parameter ${par}\n`
+      `[COG ${this.id}] Starting at address ${h16(
+        address
+      )} and parameter ${par}\n`
     );
     this.registers.par = par;
-    this.ram.loadFromRam(this.hub.mainRamReader, offset);
+    this.ram.loadFromRam(this.hub.mainRamReader, address);
     this.running$.next(true);
   }
 
