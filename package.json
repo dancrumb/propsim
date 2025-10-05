@@ -1,6 +1,6 @@
 {
   "name": "@dancrumb/propsim",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Propeller v1 simulator",
   "type": "module",
   "author": "Dan Rumney <dancrumb@gmail.com>",
