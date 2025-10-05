@@ -1,29 +1,28 @@
 import React, { useRef } from "react";
 import { Box, Text, useStdout, useInput } from "ink";
-import { SystemClock } from "./chip/SystemClock.js";
-import { Hub } from "./chip/Hub.js";
 import HubDisplay from "./ui/HubDisplay.js";
 import SystemClockDisplay from "./ui/SystemClockDisplay.js";
 import CogsDisplay from "./ui/CogsDisplay.js";
-import { MainRam } from "./chip/MainRam.js";
 import { Cog } from "./chip/Cog.js";
-import { SystemCounter } from "./chip/SystemCounter.js";
 import RunControl, { type RunSpeed } from "./ui/RunControl.js";
+import { Propeller } from "./chip/Propeller.js";
+import { inspect } from "util";
 
-const systemClock = new SystemClock();
-const systemCounter = new SystemCounter(systemClock);
-const mainRam = new MainRam("./simple.binary");
-const hub = new Hub(systemClock, 8, mainRam);
-const cogs = Array.from(
-  { length: 8 },
-  (_, i) => new Cog(systemClock, hub, systemCounter, i)
-);
+const propeller = new Propeller("./simple.binary");
+process.stderr.write(inspect(propeller.powerOn()) + "\n");
 
-cogs[0]?.start(0x18, 0x18);
+const systemClock = propeller.systemClock;
+const hub = propeller.hub;
+const cogs: Array<Cog> = propeller.cogs;
 
 export default function Demo() {
   const { stdout } = useStdout();
-  const [currentCog, setCurrentCog] = React.useState(0);
+  const [currentCog, setCurrentCog] = React.useState(
+    Math.max(
+      0,
+      cogs.findIndex((c) => c.isRunning())
+    )
+  );
   const runningId = useRef<NodeJS.Timeout | null>(null);
 
   const handleRunControlChange = React.useCallback((state: RunSpeed) => {

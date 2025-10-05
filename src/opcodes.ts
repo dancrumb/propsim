@@ -1,3 +1,14 @@
+/**
+ * This table is getting a bit silly, so probably needs a refactor, but here's whats up:
+ *
+ * Each entry has the form:
+ *
+ * | Instruction Mnemonic | Primary Opcode (6 bits) | Optional ZCRI and CON discriminators |
+ *
+ * For each loaded instruction, we look to see if the primary opcode matches. If there are
+ * discriminators, we check those too. If they match, we have a winner.
+ */
+
 const OPCODE_TABLE = [
   ["ABS", 0b101010],
   ["ABSNEG", 0b101011],
@@ -49,9 +60,12 @@ const OPCODE_TABLE = [
   ["OR", 0b011010],
   ["RCL", 0b001101],
   ["RCR", 0b001100],
-  ["RDBYTE", 0b000000],
-  ["RDLONG", 0b000010],
-  ["RDWORD", 0b000001],
+  ["RDBYTE", 0b000000, [0b0010]],
+  ["RDBYTE", 0b000000, [0b0011]],
+  ["RDLONG", 0b000010, [0b0010]],
+  ["RDLONG", 0b000010, [0b0011]],
+  ["RDWORD", 0b000001, [0b0010]],
+  ["RDWORD", 0b000001, [0b0011]],
   ["RET", 0b010111, [0b0001]],
   ["REV", 0b001111],
   ["ROL", 0b001001],
@@ -78,9 +92,12 @@ const OPCODE_TABLE = [
   ["WAITPEQ", 0b111100],
   ["WAITPNE", 0b111101],
   ["WAITVID", 0b111111],
-  ["WRBYTE", 0b000000],
-  ["WRLONG", 0b000010],
-  ["WRWORD", 0b000001],
+  ["WRBYTE", 0b000000, [0b0001]],
+  ["WRBYTE", 0b000000, [0b0000]],
+  ["WRLONG", 0b000010, [0b0001]],
+  ["WRLONG", 0b000010, [0b0000]],
+  ["WRWORD", 0b000001, [0b0001]],
+  ["WRWORD", 0b000001, [0b0000]],
   ["XOR", 0b011011],
 ] as const;
 
