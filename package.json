@@ -1,5 +1,9 @@
 {
+  "name": "@dancrumb/propsim",
+  "version": "0.0.0",
+  "description": "Propeller v1 simulator",
   "type": "module",
+  "author": "Dan Rumney <dancrumb@gmail.com>",
   "dependencies": {
     "ansi-regex": "^6.2.2",
     "ink": "^6.3.1",
