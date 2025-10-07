@@ -5,17 +5,11 @@ import { CogRegisters } from "./CogRegisters.js";
 import type { SystemCounter } from "./SystemCounter.js";
 
 import { CogFlags } from "./CogFlags.js";
-import { OperationFactory } from "../operation-implementations/OperationFactory.js";
 import type { BaseOperation } from "../operation-implementations/BaseOperation.js";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { h16 } from "../utils/val-display.js";
-
-type PipelinePhase =
-  | "read"
-  | "resolve"
-  | "resolved"
-  | "executing"
-  | "writeback";
+import type { PipelinePhase } from "./PipelinePhase.js";
+import { CogProcessor } from "./CogProcessor.js";
 
 export class Cog {
   private _pc = new BehaviorSubject(0);
@@ -33,82 +27,26 @@ export class Cog {
     null
   );
 
+  private processor: CogProcessor;
+
   constructor(
-    private systemClock: SystemClock,
+    systemClock: SystemClock,
     public readonly hub: Hub,
     systemCounter: SystemCounter,
     public readonly id: number
   ) {
     this.registers = new CogRegisters(systemCounter);
-    this.systemClock.tick$.subscribe({
-      next: () => {
-        if (!this.running$.getValue()) {
-          return;
-        }
-        switch (this.pipelinePhase.value) {
-          case "read": {
-            this.instructionRegister = this.ram.readURegister(
-              this._pc.getValue()
-            );
-            this.pipelinePhase.next("resolve");
-            break;
-          }
-          case "resolve": {
-            this.currentOperation$?.next(
-              OperationFactory.createOperation(this.instructionRegister, this)
-            );
-            this.currentOperation$.value?.resolve();
-            this.pipelinePhase.next("resolved");
-            break;
-          }
-          case "resolved": {
-            if (this.currentOperation$.value !== null) {
-              this.pipelinePhase.next("executing");
-              if (this.currentOperation$.value.hubOperation) {
-                this.hub.requestHubOperation(
-                  this.id,
-                  this.currentOperation$.value
-                );
-                break;
-              }
-              this.currentOperation$?.value.execute().then(() => {
-                this.pipelinePhase.next("writeback");
-              });
-            }
-            break;
-          }
-          case "executing": {
-            // waiting for execute to finish
-            break;
-          }
-          case "writeback": {
-            this.currentOperation$.value?.updatePC();
-            this.pipelinePhase.next("read");
-            break;
-          }
-          default: {
-            throw new Error(
-              `Invalid pipeline phase: ${this.pipelinePhase.getValue()}`
-            );
-          }
-        }
-        process.stderr.write(
-          `[COG ${this.id}] Phase: ${
-            this.pipelinePhase.getValue() ?? "WTF"
-          } PC: ${this._pc.value} (Running? ${this.running$.getValue()})\n`
-        );
-      },
-    });
+    this.processor = new CogProcessor(this, systemClock, this.running$);
 
     this.flags$ = combineLatest({ Z: this.flags.Z$, C: this.flags.C$ });
   }
 
+  private log(message: string) {
+    process.stderr.write(`[COG ${this.id}] ${message}\n`);
+  }
+
   start(par: number, address: number = 0) {
-    process.stderr.write(
-      `[COG ${this.id}] Starting at address ${h16(
-        address
-      )} and parameter ${par}\n`
-    );
+    this.log(`Starting at address ${h16(address)} and parameter ${par}`);
     this.registers.par = par;
     this.ram.loadFromRam(this.hub.mainRamReader, address);
     this.running$.next(true);
@@ -167,9 +105,7 @@ export class Cog {
 
   setPC(value: number) {
     const newPC = value & 0x1ff;
-    process.stderr.write(
-      `[COG ${this.id}] Setting PC from ${this._pc.getValue()} to ${newPC}\n`
-    );
+    this.log(`Setting PC from ${this._pc.getValue()} to ${newPC}`);
     this._pc.next(newPC);
   }
 

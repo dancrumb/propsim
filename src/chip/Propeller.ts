@@ -4,6 +4,7 @@ import { Hub } from "./Hub.js";
 import { Cog } from "./Cog.js";
 import { SystemCounter } from "./SystemCounter.js";
 import { SpinInterpreter } from "./SpinInterpreter.js";
+import { BehaviorSubject } from "rxjs";
 
 const COG_COUNT = 8;
 
@@ -17,12 +18,29 @@ export class Propeller {
 
   constructor(binaryFilePath: string) {
     this.mainRam = new MainRam(binaryFilePath);
-    this.hub = new Hub(this.systemClock, COG_COUNT, this.mainRam);
+    /*
+     * This array keeps track of the running status of each cog
+     */
+    const cogStatuses$ = new BehaviorSubject(
+      Array.from({ length: COG_COUNT }, () => false)
+    );
 
-    this.cogs = Array.from(
+    this.hub = new Hub(this.systemClock, COG_COUNT, this.mainRam, cogStatuses$);
+    const cogs = Array.from(
       { length: COG_COUNT },
       (_, i) => new Cog(this.systemClock, this.hub, this.systemCounter, i)
     );
+
+    /*
+     * Here's where we update the running status of each cog
+     */
+    cogs.forEach((cog) => {
+      cog.running$.subscribe((isRunning) =>
+        cogStatuses$.next(cogStatuses$.value.toSpliced(cog.id, 0, isRunning))
+      );
+    });
+
+    this.cogs = cogs;
 
     this.spinInterpreter = new SpinInterpreter(this.mainRam, this.cogs);
   }

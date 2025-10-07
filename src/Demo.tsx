@@ -8,7 +8,7 @@ import RunControl, { type RunSpeed } from "./ui/RunControl.js";
 import { Propeller } from "./chip/Propeller.js";
 import { inspect } from "util";
 
-const propeller = new Propeller("./test.bin");
+const propeller = new Propeller("./simple.binary");
 process.stderr.write(inspect(propeller.powerOn()) + "\n");
 
 const systemClock = propeller.systemClock;
@@ -57,7 +57,7 @@ export default function Demo() {
       paddingX={1}
     >
       <Box flexDirection="row">
-        <Box flexDirection="column">
+        <Box flexDirection="column" width={12} alignItems="center">
           <Box
             flexDirection="column"
             marginBottom={1}

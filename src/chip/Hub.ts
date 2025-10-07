@@ -13,7 +13,7 @@ type PendingHubOperation = {
 };
 
 export class Hub {
-  private currentHub = new BehaviorSubject(0);
+  private currentCogId = new BehaviorSubject(0);
   private pendingOperations = new BehaviorSubject<
     Array<PendingHubOperation | undefined>
   >([]);
@@ -22,15 +22,20 @@ export class Hub {
     return this.pendingOperations.asObservable();
   }
 
-  constructor(systemClock: SystemClock, numCogs = 8, private mainRam: MainRam) {
+  constructor(
+    systemClock: SystemClock,
+    numCogs = 8,
+    private mainRam: MainRam,
+    public cogStatuses$: BehaviorSubject<boolean[]>
+  ) {
     systemClock.tick$.subscribe({
       next: (tick) => {
         if (tick === 0 || tick % 2 === 1) return; // only every other tick
-        this.currentHub.next((this.currentHub.value + 1) % numCogs);
+        this.currentCogId.next((this.currentCogId.value + 1) % numCogs);
       },
     });
 
-    this.currentHub.subscribe({
+    this.currentCogId.subscribe({
       next: (cogId) => {
         const pending = this.pendingOperations.value[cogId];
         if (pending) {
@@ -82,7 +87,7 @@ export class Hub {
   }
 
   get currentHub$() {
-    return this.currentHub.asObservable();
+    return this.currentCogId.asObservable();
   }
 
   get mainRamReader() {

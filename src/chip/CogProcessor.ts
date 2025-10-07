@@ -1,50 +1,92 @@
-import { CogRam } from "./CogRam.js";
-import { CogRegisters } from "./CogRegisters.js";
-import { decomposeOpcode } from "../decomposeOpcode.js";
-import type { Operation } from "../Operation.js";
 import type { SystemClock } from "./SystemClock.js";
-import type { SystemCounter } from "./SystemCounter.js";
-
-const processOperation = () => Promise.resolve(1);
+import { OperationFactory } from "../operation-implementations/OperationFactory.js";
+import { BehaviorSubject, type Observable } from "rxjs";
+import type { PipelinePhase } from "./PipelinePhase.js";
+import type { Cog } from "./Cog.js";
+import { BaseOperation } from "../operation-implementations/BaseOperation.js";
+import { NOPOperation } from "../operation-implementations/nop.js";
 
 export class CogProcessor {
-  private programCounter: number = 0;
-  private cogRegisters: CogRegisters;
-  private currentOperation: Operation | null = null;
+  private currentOperation$: BehaviorSubject<BaseOperation>;
+  private instructionRegister: number = 0;
+  private running: boolean = false;
+  private pipelinePhase = new BehaviorSubject<PipelinePhase>("read");
 
   constructor(
-    private ram: CogRam,
+    private cog: Cog,
     private systemClock: SystemClock,
-    systemCounter: SystemCounter
+    running$: Observable<boolean>
   ) {
-    this.cogRegisters = new CogRegisters(systemCounter);
+    this.currentOperation$ = new BehaviorSubject<BaseOperation>(
+      new NOPOperation(0, cog, false)
+    );
+    running$.subscribe((r) => (this.running = r));
     this.systemClock.tick$.subscribe({
       next: () => {
-        this.executeCycle();
+        if (!this.running) {
+          return;
+        }
+        switch (this.pipelinePhase.value) {
+          case "read": {
+            this.instructionRegister = this.cog.readURegister(this.cog.pc);
+            this.pipelinePhase.next("resolve");
+            break;
+          }
+          case "resolve": {
+            this.currentOperation$?.next(
+              OperationFactory.createOperation(
+                this.instructionRegister,
+                this.cog
+              ) ?? new NOPOperation(0, this.cog, false)
+            );
+            this.currentOperation$.value?.resolve();
+            this.pipelinePhase.next("resolved");
+            break;
+          }
+          case "resolved": {
+            if (this.currentOperation$.value !== null) {
+              this.pipelinePhase.next("executing");
+              if (this.currentOperation$.value.hubOperation) {
+                this.cog.hub.requestHubOperation(
+                  this.cog.id,
+                  this.currentOperation$.value
+                );
+                break;
+              }
+              this.currentOperation$?.value.execute().then(() => {
+                this.pipelinePhase.next("writeback");
+              });
+            }
+            break;
+          }
+          case "executing": {
+            // waiting for execute to finish
+            break;
+          }
+          case "writeback": {
+            this.cog.setPC(
+              this.currentOperation$.getValue()?.getNextInstructionLocation() ??
+                0
+            );
+            this.pipelinePhase.next("read");
+            break;
+          }
+          default: {
+            throw new Error(
+              `Invalid pipeline phase: ${this.pipelinePhase.getValue()}`
+            );
+          }
+        }
+        process.stderr.write(
+          `[COG ${this.cog.id}] Phase: ${
+            this.pipelinePhase.getValue() ?? "WTF"
+          } PC: ${this.cog.pc} (Running? ${this.running})\n`
+        );
       },
     });
   }
 
-  executeCycle() {
-    if (this.currentOperation === null) {
-      const opcode = this.ram.readURegister(this.programCounter);
-      this.currentOperation = decomposeOpcode(opcode);
-      if (this.currentOperation === null) {
-        throw new Error(
-          `Invalid opcode at ${this.programCounter.toString(16)}`
-        );
-      }
-      processOperation(this.currentOperation).then(() => {
-        this.programCounter += 1;
-        this.currentOperation = null;
-      });
-    }
-  }
-
   readRegister(regNum: number): number {
-    if (regNum < 0x1f0) {
-      return this.ram.readURegister(regNum);
-    }
-    return this.cogRegisters.readRegister(regNum);
+    return this.cog.readURegister(regNum);
   }
 }

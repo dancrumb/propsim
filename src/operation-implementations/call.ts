@@ -15,7 +15,7 @@ export class CALLOperation extends BaseOperation {
 
   override setC(): void {}
 
-  override updatePC(): void {
-    this.cog.setPC(this.srcValue);
+  override getNextInstructionLocation() {
+    return this.srcValue;
   }
 }

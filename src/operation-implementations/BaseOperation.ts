@@ -138,6 +138,10 @@ export class BaseOperation {
     return Promise.resolve();
   }
 
+  getNextInstructionLocation() {
+    return this.cog.pc + 1;
+  }
+
   updatePC(): void {
     this.cog.setPC(this.cog.pc + 1);
   }

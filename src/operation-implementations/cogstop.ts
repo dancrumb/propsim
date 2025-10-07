@@ -2,15 +2,19 @@ import { BaseOperation } from "./BaseOperation.js";
 
 export class COGSTOPOperation extends BaseOperation {
   public readonly hubOperation = true;
+  private allCogsRunning: boolean = false;
+
   override performOperation(): Promise<void> {
+    this.allCogsRunning = this.cog.hub.cogStatuses$.getValue().every((c) => c);
     this.cog.stop();
     return Promise.resolve();
   }
 
-  override updatePC(): void {
-    this.cog.setPC(this.cog.pc + 1);
+  override setZ(): void {
+    this.cog.updateZFlag(this.cog.id === 0);
   }
 
-  override setZ(): void {}
-  override setC(): void {}
+  override setC(): void {
+    this.cog.updateCFlag(this.allCogsRunning);
+  }
 }
