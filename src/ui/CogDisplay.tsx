@@ -3,9 +3,9 @@ import { Box, Text, useInput } from "ink";
 import RamDisplay from "./RamDisplay.js";
 import { Cog } from "../chip/Cog.js";
 import { useObservableState } from "observable-hooks";
-import { from, mergeMap } from "rxjs";
 import { renderOperation } from "../Operation.js";
 import CogFlagsDisplay from "./CogFlagsDisplay.js";
+import { mergeMap } from "rxjs";
 
 export default function CogDisplay({
   cog,
@@ -21,7 +21,11 @@ export default function CogDisplay({
   const size = 16;
 
   const currentOperation$ = useObservableState(
-    cog.currentOperation$.pipe(mergeMap((op) => op?.operation ?? from([null]))),
+    cog.currentOperation$.pipe(mergeMap((op) => op?.operation)),
+    null
+  );
+  const nextOperation$ = useObservableState(
+    cog.nextOperation$.pipe(mergeMap((op) => op?.operation)),
     null
   );
 
@@ -56,6 +60,9 @@ export default function CogDisplay({
           </Box>
           <Box>
             <Text>Current Operation: {renderOperation(currentOperation$)}</Text>
+          </Box>
+          <Box>
+            <Text>Next Operation: {renderOperation(nextOperation$)}</Text>
           </Box>
           <Box>
             <CogFlagsDisplay cog={cog} />

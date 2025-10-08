@@ -5,7 +5,6 @@ import { CogRegisters } from "./CogRegisters.js";
 import type { SystemCounter } from "./SystemCounter.js";
 
 import { CogFlags } from "./CogFlags.js";
-import type { BaseOperation } from "../operation-implementations/BaseOperation.js";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { h16 } from "../utils/val-display.js";
 import type { PipelinePhase } from "./PipelinePhase.js";
@@ -23,11 +22,16 @@ export class Cog {
   private pipelinePhase = new BehaviorSubject<PipelinePhase>("read");
 
   private instructionRegister: number = 0;
-  public readonly currentOperation$ = new BehaviorSubject<BaseOperation | null>(
-    null
-  );
 
   private processor: CogProcessor;
+
+  get currentOperation$() {
+    return this.processor.currentOperation$.asObservable();
+  }
+
+  get nextOperation$() {
+    return this.processor.nextOperation$.asObservable();
+  }
 
   constructor(
     systemClock: SystemClock,
