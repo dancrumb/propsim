@@ -1,6 +1,6 @@
 import { MainRam } from "./chip/MainRam.js";
-import { decomposeOpcode } from "./decomposeOpcode.js";
-import { renderOperation } from "./OperationStructure.js";
+import { decodeOpcode } from "./opcodes/decodeOpcode.js";
+import { renderOperation } from "./opcodes/OperationStructure.js";
 
 /**
  * Just a quick and dirty script to read a chip binary and show its
@@ -21,7 +21,7 @@ const length = args.length >= 3 ? parseInt(args[2] ?? "256", 10) : 256;
 
 for (let i = offset; i < offset + length; i += 1) {
   const val = ram.readLong(i * 4);
-  const op = decomposeOpcode(val);
+  const op = decodeOpcode(val);
   process.stdout.write(
     `[${(i * 4).toString(16).toUpperCase().padStart(4, "0")}] `
   );

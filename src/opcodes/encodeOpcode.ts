@@ -1,12 +1,13 @@
-import { conToCode } from "./condition.js";
-import { OP_TO_INSTR } from "./opcodes.js";
+import { conToCode } from "../condition.js";
 import type { OperationStructure } from "./OperationStructure.js";
-
-export const INSTR_MASK = 0b1111_1100_0000_0000_0000_0000_0000_0000;
-export const ZCRI_MASK = 0b0000_0011_1100_0000_0000_0000_0000_0000;
-export const CON_MASK = 0b0000_0000_0011_1100_0000_0000_0000_0000;
-export const DEST_MASK = 0b0000_0000_0000_0011_1111_1110_0000_0000;
-export const SRC_MASK = 0b0000_0000_0000_0000_0000_0001_1111_1111;
+import {
+  CON_MASK,
+  DEST_MASK,
+  INSTR_MASK,
+  SRC_MASK,
+  ZCRI_MASK,
+} from "./masks.js";
+import { OP_TO_INSTR } from "./opcodes.js";
 
 export function encodeOpcode(operation: OperationStructure): number {
   const { instr, zcri, con, dest, src } = operation;

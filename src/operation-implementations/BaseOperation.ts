@@ -1,7 +1,7 @@
 import type { Cog } from "../chip/Cog.js";
-import { decomposeOpcode } from "../decomposeOpcode.js";
-import type { Operation } from "../Operation.js";
 import type { Condition } from "../condition.js";
+import { decodeOpcode } from "../opcodes/decodeOpcode.js";
+import type { Operation } from "../Operation.js";
 
 export type OpDescription = {
   execute: (srcValue: number, destValue: number) => number;
@@ -46,7 +46,7 @@ export class BaseOperation implements Operation {
     public cog: Cog,
     public signedReads: boolean = false
   ) {
-    const decoded = decomposeOpcode(registerValue);
+    const decoded = decodeOpcode(registerValue);
 
     if (decoded === null) {
       throw new Error(`Invalid opcode: ${registerValue.toString(16)}`);

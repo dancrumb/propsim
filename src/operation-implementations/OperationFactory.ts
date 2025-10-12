@@ -1,6 +1,6 @@
 import type { Cog } from "../chip/Cog.js";
-import { decomposeOpcode } from "../decomposeOpcode.js";
-import { type OpCode } from "../opcodes.js";
+import { decodeOpcode } from "../opcodes/decodeOpcode.js";
+import { type OpCode } from "../opcodes/opcodes.js";
 import type { Operation } from "../Operation.js";
 import { ABSOperation } from "./abs.js";
 import { ABSNEGOperation } from "./absneg.js";
@@ -30,7 +30,7 @@ const OPERATIONS: Partial<Record<OpCode | "NOP", typeof BaseOperation>> = {
 
 export class OperationFactory {
   static createOperation(registerValue: number, cog: Cog): Operation | null {
-    const { instr, con } = decomposeOpcode(registerValue) ?? {};
+    const { instr, con } = decodeOpcode(registerValue) ?? {};
 
     if (!instr) {
       return null;

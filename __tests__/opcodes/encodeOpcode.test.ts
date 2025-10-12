@@ -1,5 +1,5 @@
-import { it, expect, describe } from "vitest";
-import { encodeOpcode } from "../src/encodeOpcode";
+import { describe, expect, it } from "vitest";
+import { encodeOpcode } from "../../src/opcodes/encodeOpcode";
 
 describe("encodeOpcode", () => {
   it("should encode the opcode correctly", () => {

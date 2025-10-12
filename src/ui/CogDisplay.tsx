@@ -3,8 +3,8 @@ import { useObservableState } from "observable-hooks";
 import React from "react";
 import { map } from "rxjs";
 import { Cog } from "../chip/Cog.js";
-import { decomposeOpcode } from "../decomposeOpcode.js";
-import { renderOperation } from "../OperationStructure.js";
+import { decodeOpcode } from "../opcodes/decodeOpcode.js";
+import { renderOperation } from "../opcodes/OperationStructure.js";
 import CogFlagsDisplay from "./CogFlagsDisplay.js";
 import RamDisplay from "./RamDisplay.js";
 
@@ -65,7 +65,7 @@ export default function CogDisplay({
             <Text>
               Current Operation:{" "}
               {currentInstructionValue
-                ? renderOperation(decomposeOpcode(currentInstructionValue))
+                ? renderOperation(decodeOpcode(currentInstructionValue))
                 : "NONE"}
             </Text>
           </Box>

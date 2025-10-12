@@ -1,4 +1,4 @@
-import { CON, type Condition } from "./condition.js";
+import { CON, type Condition } from "../condition.js";
 import type { OpCode } from "./opcodes.js";
 
 export type OperationStructure = {
