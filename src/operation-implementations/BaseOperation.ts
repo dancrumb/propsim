@@ -44,7 +44,7 @@ export class BaseOperation implements Operation {
   constructor(
     public registerValue: number,
     public cog: Cog,
-    public signedReads: boolean
+    public signedReads: boolean = false
   ) {
     const decoded = decomposeOpcode(registerValue);
 
@@ -79,6 +79,8 @@ export class BaseOperation implements Operation {
   fetchSrcOperand(): void {
     if (this.iFlag) {
       this.srcOperand = this.srcValue;
+    } else if (this.signedReads) {
+      this.srcOperand = this.cog.readRegister(this.srcValue);
     } else {
       this.srcOperand = this.cog.readURegister(this.srcValue);
     }

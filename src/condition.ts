@@ -18,3 +18,13 @@ export const CON = {
 } as const;
 
 export type Condition = (typeof CON)[keyof typeof CON];
+
+export const conToCode = (condition: Condition): number => {
+  const match = Object.entries(CON).find(([, v]) => {
+    return v === condition;
+  });
+  if (!match) {
+    return 0;
+  }
+  return parseInt(match[0], 10);
+};

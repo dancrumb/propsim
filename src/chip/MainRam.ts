@@ -3,6 +3,9 @@ import { readFileSync } from "node:fs";
 export class MainRam {
   private buf: Buffer = Buffer.alloc(32 * 8196);
   constructor(private filename: string) {
+    if (filename === "NUL") {
+      return;
+    }
     const fileBuf = readFileSync(this.filename, null);
     if (fileBuf.length > this.buf.length) {
       throw new Error("File too large for MainRam");
