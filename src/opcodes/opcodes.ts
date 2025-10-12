@@ -103,6 +103,9 @@ const OPCODE_TABLE = [
 
 export type OpCode = (typeof OPCODE_TABLE)[number][0];
 
+export const isOpCode = (o: string): o is OpCode =>
+  OPCODE_TABLE.some((row) => row[0] === o);
+
 export const OP_TO_INSTR: Record<string, number> =
   Object.fromEntries(OPCODE_TABLE);
 

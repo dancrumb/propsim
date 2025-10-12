@@ -1,4 +1,4 @@
-import { BaseOperation } from "./BaseOperation.js";
+import { BaseOperation } from "../BaseOperation.js";
 
 export class SUBOperation extends BaseOperation {
   protected override roles = {

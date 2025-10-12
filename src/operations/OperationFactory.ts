@@ -1,32 +1,34 @@
+import { readdirSync } from "node:fs";
 import type { Cog } from "../chip/Cog.js";
 import { decodeOpcode } from "../opcodes/decodeOpcode.js";
-import { type OpCode } from "../opcodes/opcodes.js";
+import { isOpCode, type OpCode } from "../opcodes/opcodes.js";
 import type { Operation } from "../Operation.js";
-import { ABSOperation } from "./abs.js";
-import { ABSNEGOperation } from "./absneg.js";
-import { ADDOperation } from "./add.js";
-import { ADDABSOperation } from "./addabs.js";
-import type { BaseOperation } from "./BaseOperation.js";
-import { CALLOperation } from "./call.js";
-import { COGSTOPOperation } from "./cogstop.js";
-import { JMPOperation } from "./jmp.js";
-import { NOPOperation } from "./nop.js";
-import { SUBOperation } from "./sub.js";
-import { WAITCNTOperation } from "./waitcnt.js";
+import { NOPOperation } from "./implementations/nop.js";
 
-const OPERATIONS: Partial<Record<OpCode | "NOP", typeof BaseOperation>> = {
-  ABS: ABSOperation,
-  ABSNEG: ABSNEGOperation,
-  ADDABS: ADDABSOperation,
-  ADD: ADDOperation,
-  CALL: CALLOperation,
-  COGSTOP: COGSTOPOperation,
-  JMP: JMPOperation,
+const OPERATIONS: Partial<
+  Record<
+    OpCode | "NOP",
+    new (registerValue: number, cog: Cog, signedReads?: boolean) => Operation
+  >
+> = {
   NOP: NOPOperation,
-  SUB: SUBOperation,
-  WAITCNT: WAITCNTOperation,
-  // Add other operations here
 };
+
+await readdirSync(`${import.meta.dirname}/implementations`).map(
+  async (modName) => {
+    const mod = await import(
+      `./implementations/${modName.replace(".ts", ".js")}`
+    );
+    Object.entries(mod).forEach(([exportName, exportValue]) => {
+      if (exportName.endsWith("Operation")) {
+        const inst = exportName.replace("Operation", "");
+        if (isOpCode(inst)) {
+          OPERATIONS[inst] = exportValue as new () => Operation;
+        }
+      }
+    });
+  }
+);
 
 export class OperationFactory {
   static createOperation(registerValue: number, cog: Cog): Operation | null {

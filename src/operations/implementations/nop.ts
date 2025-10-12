@@ -1,4 +1,4 @@
-import { BaseOperation } from "./BaseOperation.js";
+import { BaseOperation } from "../BaseOperation.js";
 
 export class NOPOperation extends BaseOperation {
   override _execute(): Promise<void> {

@@ -26,8 +26,8 @@ export class BaseOperation implements Operation {
 
   protected con: Condition;
   private _zcri: number;
-  private srcValue: number;
-  private destValue: number;
+  protected srcValue: number;
+  protected destValue: number;
 
   protected _execute(): Promise<void> {
     return Promise.resolve();

@@ -1,4 +1,4 @@
-import { BaseOperation } from "./BaseOperation.js";
+import { BaseOperation } from "../BaseOperation.js";
 
 export class JMPOperation extends BaseOperation {
   constructor(...args: ConstructorParameters<typeof BaseOperation>) {
@@ -16,6 +16,6 @@ export class JMPOperation extends BaseOperation {
   override setC(): void {}
 
   override getNextExpectedPC() {
-    return this.srcOperand;
+    return this.srcValue;
   }
 }

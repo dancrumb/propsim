@@ -1,7 +1,7 @@
 import { BehaviorSubject, Observable } from "rxjs";
-import { NOPOperation } from "../operation-implementations/nop.js";
-import { OperationFactory } from "../operation-implementations/OperationFactory.js";
 import type { Operation } from "../Operation.js";
+import { NOPOperation } from "../operations/implementations/nop.js";
+import { OperationFactory } from "../operations/OperationFactory.js";
 import type { Cog } from "./Cog.js";
 import type { SystemClock } from "./SystemClock.js";
 

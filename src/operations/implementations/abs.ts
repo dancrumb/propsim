@@ -1,4 +1,4 @@
-import { BaseOperation } from "./BaseOperation.js";
+import { BaseOperation } from "../BaseOperation.js";
 
 export class ABSOperation extends BaseOperation {
   constructor(...args: ConstructorParameters<typeof BaseOperation>) {

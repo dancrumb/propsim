@@ -1,4 +1,4 @@
-import { BaseOperation } from "./BaseOperation.js";
+import { BaseOperation } from "../BaseOperation.js";
 
 export class COGSTOPOperation extends BaseOperation {
   public override readonly hubOperation = true;

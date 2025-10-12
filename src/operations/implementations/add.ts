@@ -1,8 +1,6 @@
-import { BaseOperation } from "./BaseOperation.js";
+import { BaseOperation } from "../BaseOperation.js";
 
-export class ADDSOperation extends BaseOperation {
-  override signedReads = true;
-
+export class ADDOperation extends BaseOperation {
   override _execute(): Promise<void> {
     this.result = this.srcOperand + this.destOperand;
     return Promise.resolve();
