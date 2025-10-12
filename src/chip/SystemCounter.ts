@@ -2,7 +2,7 @@ import { SystemClock } from "./SystemClock.js";
 
 export class SystemCounter {
   private count: number = 0;
-  constructor(private systemClock: SystemClock) {
+  constructor(systemClock: SystemClock) {
     systemClock.tick$.subscribe(() => {
       this.increment();
     });

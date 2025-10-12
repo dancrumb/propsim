@@ -11,6 +11,7 @@ import { CALLOperation } from "./call.js";
 import { JMPOperation } from "./jmp.js";
 import { SUBOperation } from "./sub.js";
 import { COGSTOPOperation } from "./cogstop.js";
+import type { Operation } from "../Operation.js";
 
 const OPERATIONS: Partial<Record<OpCode | "NOP", typeof BaseOperation>> = {
   ABS: ABSOperation,
@@ -26,10 +27,7 @@ const OPERATIONS: Partial<Record<OpCode | "NOP", typeof BaseOperation>> = {
 };
 
 export class OperationFactory {
-  static createOperation(
-    registerValue: number,
-    cog: Cog
-  ): BaseOperation | null {
+  static createOperation(registerValue: number, cog: Cog): Operation | null {
     const { instr, con } = decomposeOpcode(registerValue) ?? {};
 
     if (!instr) {
@@ -37,11 +35,7 @@ export class OperationFactory {
     }
 
     let opCtor = OPERATIONS[instr] ?? NOPOperation;
-    let opCode = new NOPOperation(registerValue, cog, false);
-
-    process.stderr.write(
-      `Creating operation for instruction ${instr} with condition ${con}\n`
-    );
+    let opCode: Operation = new NOPOperation(registerValue, cog, false);
 
     switch (con) {
       case "ALWAYS":

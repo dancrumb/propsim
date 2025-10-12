@@ -7,11 +7,11 @@ import type { SystemCounter } from "./SystemCounter.js";
 import { CogFlags } from "./CogFlags.js";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import { h16 } from "../utils/val-display.js";
-import type { PipelinePhase } from "./PipelinePhase.js";
 import { CogProcessor } from "./CogProcessor.js";
+import { CogPipeline } from "./CogPipeline.js";
+import type { Operation } from "../Operation.js";
 
 export class Cog {
-  private _pc = new BehaviorSubject(0);
   private ram = new CogRam();
   private registers: CogRegisters;
   public readonly running$ = new BehaviorSubject<boolean>(false);
@@ -19,19 +19,13 @@ export class Cog {
 
   public readonly flags$: Observable<{ Z: boolean; C: boolean }>;
 
-  private pipelinePhase = new BehaviorSubject<PipelinePhase>("read");
-
-  private instructionRegister: number = 0;
-
   private processor: CogProcessor;
+  private pipeline: CogPipeline;
 
-  get currentOperation$() {
-    return this.processor.currentOperation$.asObservable();
-  }
+  public readonly pc$: Observable<number>;
+  public readonly currentOperation$: Observable<Operation>;
 
-  get nextOperation$() {
-    return this.processor.nextOperation$.asObservable();
-  }
+  private programCounter$ = new BehaviorSubject<number>(0);
 
   constructor(
     systemClock: SystemClock,
@@ -40,9 +34,24 @@ export class Cog {
     public readonly id: number
   ) {
     this.registers = new CogRegisters(systemCounter);
-    this.processor = new CogProcessor(this, systemClock, this.running$);
+    this.pipeline = new CogPipeline(this, systemClock);
+    this.processor = new CogProcessor(
+      this,
+      systemClock,
+      this.pipeline,
+      this.running$
+    );
 
     this.flags$ = combineLatest({ Z: this.flags.Z$, C: this.flags.C$ });
+
+    this.processor.pc$.subscribe((pc) => this.programCounter$.next(pc));
+
+    this.pc$ = this.programCounter$.asObservable();
+    this.currentOperation$ = this.processor.currentOperation$.asObservable();
+
+    this.running$.subscribe((isRunning) => {
+      this.pipeline.running = isRunning;
+    });
   }
 
   private log(message: string) {
@@ -63,10 +72,6 @@ export class Cog {
 
   getRam() {
     return this.ram;
-  }
-
-  get pc$() {
-    return this._pc.asObservable();
   }
 
   isRunning() {
@@ -104,13 +109,11 @@ export class Cog {
   }
 
   get pc() {
-    return this._pc.getValue();
+    return this.programCounter$.getValue();
   }
 
-  setPC(value: number) {
-    const newPC = value & 0x1ff;
-    this.log(`Setting PC from ${this._pc.getValue()} to ${newPC}`);
-    this._pc.next(newPC);
+  get readAhead$() {
+    return this.pipeline.readAheadPointer$;
   }
 
   updateZFlag(set: boolean) {

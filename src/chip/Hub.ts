@@ -12,15 +12,18 @@ type PendingHubOperation = {
   };
 };
 
+/**
+ * The Hub represents the Hub in a Propeller chip
+ */
 export class Hub {
   private currentCogId = new BehaviorSubject(0);
   private pendingOperations = new BehaviorSubject<
     Array<PendingHubOperation | undefined>
   >([]);
 
-  get pendingOperations$() {
-    return this.pendingOperations.asObservable();
-  }
+  public readonly pendingOperations$ = this.pendingOperations.asObservable();
+
+  public readonly currentHub$ = this.currentCogId.asObservable();
 
   constructor(
     systemClock: SystemClock,
@@ -84,10 +87,6 @@ export class Hub {
 
   requestHubOperation(cogId: number, operation: BaseOperation): Promise<void> {
     return this.setPendingOperation(cogId, operation);
-  }
-
-  get currentHub$() {
-    return this.currentCogId.asObservable();
   }
 
   get mainRamReader() {

@@ -6,8 +6,8 @@ export class ABSOperation extends BaseOperation {
     this.signedReads = true;
   }
 
-  override performOperation(): Promise<void> {
-    this.result = Math.abs(this.srcValue);
+  override _execute(): Promise<void> {
+    this.result = Math.abs(this.srcOperand);
     return Promise.resolve();
   }
 
@@ -16,6 +16,6 @@ export class ABSOperation extends BaseOperation {
   }
 
   override setC(): void {
-    this.cog.updateCFlag(this.srcValue < 0);
+    this.cog.updateCFlag(this.srcOperand < 0);
   }
 }

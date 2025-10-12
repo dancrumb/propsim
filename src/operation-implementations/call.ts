@@ -6,7 +6,7 @@ export class CALLOperation extends BaseOperation {
     this.signedReads = false;
   }
 
-  override performOperation(): Promise<void> {
+  override _execute(): Promise<void> {
     this.writeResult = false;
     return Promise.resolve();
   }
@@ -15,7 +15,7 @@ export class CALLOperation extends BaseOperation {
 
   override setC(): void {}
 
-  override getNextInstructionLocation() {
-    return this.srcValue;
+  override getNextExpectedPC(): number {
+    return this.srcOperand;
   }
 }

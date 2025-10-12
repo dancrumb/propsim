@@ -1,7 +1,7 @@
 import { BaseOperation } from "./BaseOperation.js";
 
 export class COGSTOPOperation extends BaseOperation {
-  public readonly hubOperation = true;
+  public override readonly hubOperation = true;
   private allCogsRunning: boolean = false;
 
   override performOperation(): Promise<void> {

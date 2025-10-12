@@ -1,70 +1,76 @@
 import type { SystemClock } from "./SystemClock.js";
-import { OperationFactory } from "../operation-implementations/OperationFactory.js";
-import { BehaviorSubject, type Observable } from "rxjs";
-import type { PipelinePhase } from "./PipelinePhase.js";
+import { BehaviorSubject, combineLatest, type Observable } from "rxjs";
 import type { Cog } from "./Cog.js";
-import { BaseOperation } from "../operation-implementations/BaseOperation.js";
 import { NOPOperation } from "../operation-implementations/nop.js";
+import type { CogPipeline } from "./CogPipeline.js";
+import type { Operation } from "../Operation.js";
 
+enum ProcessorPhase {
+  FetchDstOperand,
+  FetchSrcOperand,
+  PerformOperation,
+  PerformingOperation,
+  StoreResult,
+}
+
+/**
+ * The CogProcessor represents the actual processing unit of a Cog
+ */
 export class CogProcessor {
-  public readonly currentOperation$: BehaviorSubject<BaseOperation>;
-  public readonly nextOperation$: BehaviorSubject<BaseOperation>;
-  private instructionRegister: number = 0;
-  private nextInstructionRegister: number = 0;
-  private running: boolean = false;
-  private pipelinePhase = new BehaviorSubject<PipelinePhase>("read");
-  private nextPipelinePhase = new BehaviorSubject<PipelinePhase>("read");
+  public readonly currentOperation$: BehaviorSubject<Operation>;
 
-  private ticksUntilReadAhead: number = 4;
+  private currentPhase$ = new BehaviorSubject<ProcessorPhase>(
+    ProcessorPhase.FetchDstOperand
+  );
 
-  private processPipeline() {
-    switch (this.pipelinePhase.value) {
-      case "read": {
-        this.instructionRegister = this.cog.readURegister(this.cog.pc);
-        this.pipelinePhase.next("resolve");
-        break;
-      }
-      case "resolve": {
-        this.currentOperation$?.next(
-          OperationFactory.createOperation(
-            this.instructionRegister,
-            this.cog
-          ) ?? new NOPOperation(0, this.cog, false)
-        );
-        this.currentOperation$.value?.resolve();
-        this.pipelinePhase.next("resolved");
-        break;
-      }
-      case "resolved": {
-        if (this.currentOperation$.value !== null) {
-          this.pipelinePhase.next("executing");
-          if (this.currentOperation$.value.hubOperation) {
-            this.cog.hub.requestHubOperation(
-              this.cog.id,
-              this.currentOperation$.value
-            );
-            break;
-          }
-          this.currentOperation$?.value.execute().then(() => {
-            this.pipelinePhase.next("writeback");
-          });
+  private programCounter$: BehaviorSubject<number> =
+    new BehaviorSubject<number>(0);
+
+  private log(message: string) {
+    process.stderr.write(`[COG ${this.cog.id}]: ${message}\n`);
+  }
+
+  private processTick({ running }: { running: boolean }) {
+    if (!running) {
+      return;
+    }
+    const phase = this.currentPhase$.value;
+    this.log(`In phase: ${ProcessorPhase[phase]}`);
+    switch (phase) {
+      case ProcessorPhase.FetchDstOperand: {
+        const currentOperation = this.pipeline.currentOperation;
+        if (currentOperation === null) {
+          return;
         }
+        this.currentOperation$.next(currentOperation);
+        this.programCounter$.next(this.pipeline.readAheadPointer);
+        this.currentOperation$.value.fetchDstOperand();
+        this.currentPhase$.next(ProcessorPhase.FetchSrcOperand);
         break;
       }
-      case "executing": {
-        // waiting for execute to finish
+      case ProcessorPhase.FetchSrcOperand: {
+        this.currentOperation$.value.fetchSrcOperand();
+        this.currentPhase$.next(ProcessorPhase.PerformOperation);
         break;
       }
-      case "writeback": {
-        this.cog.setPC(
-          this.currentOperation$.getValue()?.getNextInstructionLocation() ?? 0
-        );
-        this.pipelinePhase.next("read");
+      case ProcessorPhase.PerformOperation: {
+        this.currentOperation$.value.performOperation().then(() => {
+          this.currentPhase$.next(ProcessorPhase.StoreResult);
+        });
+        this.currentPhase$.next(ProcessorPhase.PerformingOperation);
+
         break;
       }
+      case ProcessorPhase.StoreResult: {
+        this.currentOperation$.value.storeResult();
+        this.currentPhase$.next(ProcessorPhase.FetchDstOperand);
+
+        break;
+      }
+
       default: {
         throw new Error(
-          `Invalid pipeline phase: ${this.pipelinePhase.getValue()}`
+          `Invalid pipeline phase: ${this.currentPhase$.getValue()}`
         );
       }
     }
@@ -72,32 +78,28 @@ export class CogProcessor {
 
   constructor(
     private cog: Cog,
-    private systemClock: SystemClock,
+    systemClock: SystemClock,
+    private pipeline: CogPipeline,
     running$: Observable<boolean>
   ) {
-    this.currentOperation$ = new BehaviorSubject<BaseOperation>(
-      new NOPOperation(0, cog, false)
-    );
-    this.nextOperation$ = new BehaviorSubject<BaseOperation>(
+    this.currentOperation$ = new BehaviorSubject<Operation>(
       new NOPOperation(0, cog, false)
     );
 
-    running$.subscribe((r) => (this.running = r));
-    this.systemClock.tick$.subscribe({
-      next: () => {
-        if (!this.running) {
-          return;
-        }
-        this.ticksUntilReadAhead = Math.max(0, this.ticksUntilReadAhead - 1);
-
-        this.processPipeline();
-        process.stderr.write(
-          `[COG ${this.cog.id}] Phase: ${
-            this.pipelinePhase.getValue() ?? "WTF"
-          } PC: ${this.cog.pc} (Running? ${this.running})\n`
-        );
-      },
+    combineLatest({
+      running: running$,
+      clockTick: systemClock.tick$,
+    }).subscribe({
+      next: this.processTick.bind(this),
     });
+  }
+
+  get pc$(): Observable<number> {
+    return this.programCounter$.asObservable();
+  }
+
+  set pc(newPC: number) {
+    this.programCounter$.next(newPC & 0xfff);
   }
 
   readRegister(regNum: number): number {

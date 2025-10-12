@@ -1,6 +1,6 @@
 import { MainRam } from "./chip/MainRam.js";
 import { decomposeOpcode } from "./decomposeOpcode.js";
-import { renderOperation } from "./Operation.js";
+import { renderOperation } from "./OperationStructure.js";
 
 /**
  * Just a quick and dirty script to read a chip binary and show its

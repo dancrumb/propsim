@@ -2,7 +2,7 @@ import { BaseOperation } from "./BaseOperation.js";
 
 export class ADDOperation extends BaseOperation {
   override performOperation(): Promise<void> {
-    this.result = this.srcValue + this.destValue;
+    this.result = this.srcOperand + this.destOperand;
     return Promise.resolve();
   }
 

@@ -68,9 +68,6 @@ export class SpinInterpreter {
       );
       switch (spinOp) {
         case "lalo": {
-          const vBase = this.vBase;
-          const dBase = this.dBase;
-
           const memfunc = spinOpCode & 3;
           let memsize = 0;
           let membase = 0;

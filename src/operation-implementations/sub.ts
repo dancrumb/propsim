@@ -1,16 +1,18 @@
+import type { Cog } from "../chip/Cog.js";
 import { BaseOperation } from "./BaseOperation.js";
 
 export class SUBOperation extends BaseOperation {
-  protected roles = {
+  protected override roles = {
     src: { read: "value", write: "none" },
     dest: { read: "address", write: "value" },
   } as const;
 
-  constructor(registerValue: number, cog: import("../chip/Cog.js").Cog) {
+  constructor(registerValue: number, cog: Cog) {
     super(registerValue, cog, false);
   }
-  override performOperation(): Promise<void> {
-    this.result = this.destValue - this.srcValue;
+
+  override _execute(): Promise<void> {
+    this.result = this.destOperand - this.srcOperand;
     return Promise.resolve();
   }
 

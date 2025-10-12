@@ -2,15 +2,41 @@ import React, { type ReactElement } from "react";
 import { Box, Text } from "ink";
 import type { CogRam } from "../chip/CogRam.js";
 
+const Pointers = ({
+  pc,
+  readAhead,
+  i,
+}: {
+  pc: number;
+  readAhead: number;
+  i: number;
+}) => {
+  if (pc === readAhead) {
+    return (
+      <>
+        <Box>{i === pc && <Text color="redBright"> &lt;-- PC/NXT</Text>}</Box>
+      </>
+    );
+  }
+  return (
+    <>
+      <Box>{i === pc && <Text color="redBright"> &lt;-- PC</Text>}</Box>
+      <Box>{i === readAhead && <Text color="red"> &lt;-- NXT</Text>}</Box>
+    </>
+  );
+};
+
 export default function RamDisplay({
   ram,
   size = 16,
   pc,
+  readAhead,
   selected = 0,
 }: {
   ram: CogRam;
   size?: number;
   pc: number;
+  readAhead: number;
   selected?: number;
 }) {
   const [currentOffset, setCurrentOffset] = React.useState(0);
@@ -44,12 +70,18 @@ export default function RamDisplay({
             </Text>
           </Box>
         </Box>
-        <Box>{i === pc && <Text color="red"> &lt;-- PC</Text>}</Box>
+        <Pointers i={i} pc={pc} readAhead={readAhead} />
       </Box>
     );
   }
   return (
-    <Box flexDirection="column" paddingX={1} height={"100%"} overflow="hidden">
+    <Box
+      flexDirection="column"
+      paddingX={1}
+      height={"100%"}
+      overflow="hidden"
+      minWidth={28}
+    >
       {rows}
     </Box>
   );

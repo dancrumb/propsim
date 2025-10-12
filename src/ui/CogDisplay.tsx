@@ -3,9 +3,10 @@ import { Box, Text, useInput } from "ink";
 import RamDisplay from "./RamDisplay.js";
 import { Cog } from "../chip/Cog.js";
 import { useObservableState } from "observable-hooks";
-import { renderOperation } from "../Operation.js";
+import { renderOperation } from "../OperationStructure.js";
 import CogFlagsDisplay from "./CogFlagsDisplay.js";
-import { mergeMap } from "rxjs";
+import { map } from "rxjs";
+import { decomposeOpcode } from "../decomposeOpcode.js";
 
 export default function CogDisplay({
   cog,
@@ -17,16 +18,12 @@ export default function CogDisplay({
   const cogRam = cog.getRam();
   const isRunning = useObservableState(cog.running$, cog.isRunning());
   const pc = useObservableState(cog.pc$, 0);
+  const readAhead = useObservableState(cog.readAhead$, 0);
   const [selected, setSelected] = React.useState(0);
   const size = 16;
 
-  const currentOperation$ = useObservableState(
-    cog.currentOperation$.pipe(mergeMap((op) => op?.operation)),
-    null
-  );
-  const nextOperation$ = useObservableState(
-    cog.nextOperation$.pipe(mergeMap((op) => op?.operation)),
-    null
+  const currentInstructionValue = useObservableState(
+    cog.pc$.pipe(map((pc) => cog.readURegister(pc)))
   );
 
   useInput((_input, key) => {
@@ -52,18 +49,27 @@ export default function CogDisplay({
       </Box>
       <Box flexDirection="row" width={"100%"}>
         <Box>
-          <RamDisplay ram={cogRam} size={size} pc={pc} selected={selected} />
+          <RamDisplay
+            ram={cogRam}
+            size={size}
+            pc={pc}
+            readAhead={readAhead}
+            selected={selected}
+          />
         </Box>
         <Box flexDirection="column" gap={2}>
           <Box>
             <Text>Running? {isRunning ? "Yes" : "No"}</Text>
           </Box>
           <Box>
-            <Text>Current Operation: {renderOperation(currentOperation$)}</Text>
+            <Text>
+              Current Operation:{" "}
+              {currentInstructionValue
+                ? renderOperation(decomposeOpcode(currentInstructionValue))
+                : "NONE"}
+            </Text>
           </Box>
-          <Box>
-            <Text>Next Operation: {renderOperation(nextOperation$)}</Text>
-          </Box>
+
           <Box>
             <CogFlagsDisplay cog={cog} />
           </Box>

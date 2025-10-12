@@ -7,7 +7,7 @@ export class ABSNEGOperation extends BaseOperation {
   }
 
   override performOperation(): Promise<void> {
-    this.result = -Math.abs(this.srcValue);
+    this.result = -Math.abs(this.srcOperand);
     return Promise.resolve();
   }
 
@@ -16,6 +16,6 @@ export class ABSNEGOperation extends BaseOperation {
   }
 
   override setC(): void {
-    this.cog.updateCFlag(this.srcValue < 0);
+    this.cog.updateCFlag(this.srcOperand < 0);
   }
 }

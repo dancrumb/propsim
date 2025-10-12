@@ -16,9 +16,15 @@
     "unicoderegexp": "^0.4.1",
     "vitest": "^3.2.4"
   },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "check": "tsc --noEmit"
+  },
   "devDependencies": {
     "@types/node": "^24.6.2",
-    "@types/react": "^19.2.0"
+    "@types/react": "^19.2.0",
+    "turbo": "^2.5.8"
   },
   "packageManager": "pnpm@10.18.0+sha256.3967a3efe2909df305fec4b833a304dfca17c380b6bb77672f4dac4f2cdd3788"
 }
