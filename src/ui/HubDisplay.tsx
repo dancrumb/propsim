@@ -1,7 +1,7 @@
-import { useObservableState } from "observable-hooks";
-import { Hub } from "../chip/Hub.js";
 import { Box, Text } from "ink";
+import { useObservableState } from "observable-hooks";
 import React from "react";
+import { Hub } from "../chip/Hub.js";
 
 const NumberBox = ({
   number,

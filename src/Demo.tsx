@@ -1,15 +1,12 @@
+import { Box, Text, useInput, useStdout } from "ink";
 import React, { useRef } from "react";
-import { Box, Text, useStdout, useInput } from "ink";
-import HubDisplay from "./ui/HubDisplay.js";
-import SystemClockDisplay from "./ui/SystemClockDisplay.js";
-import CogsDisplay from "./ui/CogsDisplay.js";
-import { Cog } from "./chip/Cog.js";
-import RunControl, { type RunSpeed } from "./ui/RunControl.js";
-import { Propeller } from "./chip/Propeller.js";
 import { inspect } from "util";
-import { setUseWhatChange } from "@simbathesailor/use-what-changed";
-
-setUseWhatChange(true);
+import { Cog } from "./chip/Cog.js";
+import { Propeller } from "./chip/Propeller.js";
+import CogsDisplay from "./ui/CogsDisplay.js";
+import HubDisplay from "./ui/HubDisplay.js";
+import RunControl, { type RunSpeed } from "./ui/RunControl.js";
+import SystemClockDisplay from "./ui/SystemClockDisplay.js";
 
 const propeller = new Propeller("./simple.binary");
 process.stderr.write(inspect(propeller.powerOn()) + "\n");

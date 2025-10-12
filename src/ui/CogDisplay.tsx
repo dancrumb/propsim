@@ -1,12 +1,12 @@
-import React from "react";
 import { Box, Text, useInput } from "ink";
-import RamDisplay from "./RamDisplay.js";
-import { Cog } from "../chip/Cog.js";
 import { useObservableState } from "observable-hooks";
+import React from "react";
+import { map } from "rxjs";
+import { Cog } from "../chip/Cog.js";
+import { decomposeOpcode } from "../decomposeOpcode.js";
 import { renderOperation } from "../OperationStructure.js";
 import CogFlagsDisplay from "./CogFlagsDisplay.js";
-import { map } from "rxjs";
-import { decomposeOpcode } from "../decomposeOpcode.js";
+import RamDisplay from "./RamDisplay.js";
 
 export default function CogDisplay({
   cog,

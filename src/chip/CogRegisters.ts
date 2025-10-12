@@ -1,5 +1,5 @@
-import type { SystemCounter } from "./SystemCounter.js";
 import type { PickKeys } from "ts-essentials";
+import type { SystemCounter } from "./SystemCounter.js";
 
 const SPECIAL_REGISTERS: Record<number, PickKeys<CogRegisters, number>> = {
   0x1f0: "par",

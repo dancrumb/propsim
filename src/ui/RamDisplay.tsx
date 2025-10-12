@@ -1,5 +1,5 @@
-import React, { type ReactElement } from "react";
 import { Box, Text } from "ink";
+import React, { type ReactElement } from "react";
 import type { CogRam } from "../chip/CogRam.js";
 
 const Pointers = ({

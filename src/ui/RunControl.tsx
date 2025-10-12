@@ -1,5 +1,5 @@
+import { Box, Text, useInput } from "ink";
 import React from "react";
-import { Box, useInput, Text } from "ink";
 
 export type RunSpeed = "x1" | "x2" | "paused";
 

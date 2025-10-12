@@ -1,5 +1,5 @@
-import { useObservableState } from "observable-hooks";
 import { Box, Text } from "ink";
+import { useObservableState } from "observable-hooks";
 import React from "react";
 import { SystemClock } from "../chip/SystemClock.js";
 import { h16 } from "../utils/val-display.js";

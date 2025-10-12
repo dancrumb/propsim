@@ -1,17 +1,17 @@
 import type { Cog } from "../chip/Cog.js";
+import { decomposeOpcode } from "../decomposeOpcode.js";
 import { type OpCode } from "../opcodes.js";
+import type { Operation } from "../Operation.js";
 import { ABSOperation } from "./abs.js";
 import { ABSNEGOperation } from "./absneg.js";
-import type { BaseOperation } from "./BaseOperation.js";
-import { decomposeOpcode } from "../decomposeOpcode.js";
-import { NOPOperation } from "./nop.js";
 import { ADDOperation } from "./add.js";
 import { ADDABSOperation } from "./addabs.js";
+import type { BaseOperation } from "./BaseOperation.js";
 import { CALLOperation } from "./call.js";
-import { JMPOperation } from "./jmp.js";
-import { SUBOperation } from "./sub.js";
 import { COGSTOPOperation } from "./cogstop.js";
-import type { Operation } from "../Operation.js";
+import { JMPOperation } from "./jmp.js";
+import { NOPOperation } from "./nop.js";
+import { SUBOperation } from "./sub.js";
 import { WAITCNTOperation } from "./waitcnt.js";
 
 const OPERATIONS: Partial<Record<OpCode | "NOP", typeof BaseOperation>> = {

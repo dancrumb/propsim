@@ -1,10 +1,10 @@
-import { MainRam } from "./MainRam.js";
-import { SystemClock } from "./SystemClock.js";
-import { Hub } from "./Hub.js";
-import { Cog } from "./Cog.js";
-import { SystemCounter } from "./SystemCounter.js";
-import { SpinInterpreter } from "./SpinInterpreter.js";
 import { BehaviorSubject } from "rxjs";
+import { Cog } from "./Cog.js";
+import { Hub } from "./Hub.js";
+import { MainRam } from "./MainRam.js";
+import { SpinInterpreter } from "./SpinInterpreter.js";
+import { SystemClock } from "./SystemClock.js";
+import { SystemCounter } from "./SystemCounter.js";
 
 const COG_COUNT = 8;
 

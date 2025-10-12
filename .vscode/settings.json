@@ -1,8 +1,8 @@
 {
   "editor.codeActionsOnSave": {
     "source.removeUnusedImports": "always",
-    "source.addMissingImports.ts": "always",
-    "source.organizeImports.ts": "always"
+    "source.addMissingImports": "always",
+    "source.organizeImports": "always"
   },
   "cSpell.words": ["ABSNEG", "COGINIT", "WAITCNT", "zcri"]
 }

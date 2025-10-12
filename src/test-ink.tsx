@@ -1,5 +1,5 @@
 import { render } from "ink";
-import Demo from "./Demo.js";
 import React from "react";
+import Demo from "./Demo.js";
 
 render(<Demo />);

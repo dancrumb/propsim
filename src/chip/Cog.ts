@@ -1,16 +1,15 @@
-import type { Hub } from "./Hub.js";
-import type { SystemClock } from "./SystemClock.js";
+import EventEmitter from "node:events";
+import { BehaviorSubject, combineLatest, Observable } from "rxjs";
+import type { Operation } from "../Operation.js";
+import { h16 } from "../utils/val-display.js";
+import { CogFlags } from "./CogFlags.js";
+import { CogPipeline } from "./CogPipeline.js";
+import { CogProcessor } from "./CogProcessor.js";
 import { CogRam } from "./CogRam.js";
 import { CogRegisters } from "./CogRegisters.js";
+import type { Hub } from "./Hub.js";
+import type { SystemClock } from "./SystemClock.js";
 import type { SystemCounter } from "./SystemCounter.js";
-
-import { CogFlags } from "./CogFlags.js";
-import { BehaviorSubject, combineLatest, Observable } from "rxjs";
-import { h16 } from "../utils/val-display.js";
-import { CogProcessor } from "./CogProcessor.js";
-import { CogPipeline } from "./CogPipeline.js";
-import type { Operation } from "../Operation.js";
-import EventEmitter from "node:events";
 
 export class Cog extends EventEmitter {
   private ram = new CogRam();

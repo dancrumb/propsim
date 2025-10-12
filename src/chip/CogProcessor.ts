@@ -1,9 +1,9 @@
-import type { SystemClock } from "./SystemClock.js";
 import { BehaviorSubject, combineLatest, type Observable } from "rxjs";
-import type { Cog } from "./Cog.js";
 import { NOPOperation } from "../operation-implementations/nop.js";
-import type { CogPipeline } from "./CogPipeline.js";
 import type { Operation } from "../Operation.js";
+import type { Cog } from "./Cog.js";
+import type { CogPipeline } from "./CogPipeline.js";
+import type { SystemClock } from "./SystemClock.js";
 
 enum ProcessorPhase {
   FetchDstOperand,

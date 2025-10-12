@@ -1,9 +1,9 @@
-import React, { useRef } from "react";
 import { Box, Text } from "ink";
-import CogDisplay from "./CogDisplay.js";
-import type { Cog } from "../chip/Cog.js";
-import { combineLatest } from "rxjs";
 import { useObservableEagerState } from "observable-hooks";
+import React, { useRef } from "react";
+import { combineLatest } from "rxjs";
+import type { Cog } from "../chip/Cog.js";
+import CogDisplay from "./CogDisplay.js";
 
 export default function CogsDisplay({
   currentCog,

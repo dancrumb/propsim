@@ -1,7 +1,7 @@
-import React from "react";
 import { Box, Text } from "ink";
-import type { Cog } from "../chip/Cog.js";
 import { useObservableState } from "observable-hooks";
+import React from "react";
+import type { Cog } from "../chip/Cog.js";
 
 export default function RunControl({ cog }: { cog: Cog }) {
   const { Z, C } = useObservableState(cog.flags$, { Z: false, C: false });

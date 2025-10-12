@@ -1,7 +1,7 @@
 import { BehaviorSubject } from "rxjs";
-import { SystemClock } from "./SystemClock.js";
-import type { MainRam } from "./MainRam.js";
 import type { Operation } from "../Operation.js";
+import type { MainRam } from "./MainRam.js";
+import { SystemClock } from "./SystemClock.js";
 
 type PendingHubOperation = {
   cogId: number;
