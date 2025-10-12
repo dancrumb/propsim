@@ -54,11 +54,23 @@ export class CogProcessor {
         break;
       }
       case ProcessorPhase.PerformOperation: {
-        this.currentOperation$.value.performOperation().then(() => {
+        let opComplete: Promise<void>;
+        if (this.currentOperation$.value.hubOperation) {
+          opComplete = this.cog.hub.requestHubOperation(
+            this.cog.id,
+            this.currentOperation$.value
+          );
+        } else {
+          opComplete = this.currentOperation$.value.performOperation();
+        }
+        opComplete.then(() => {
           this.currentPhase$.next(ProcessorPhase.StoreResult);
         });
         this.currentPhase$.next(ProcessorPhase.PerformingOperation);
 
+        break;
+      }
+      case ProcessorPhase.PerformingOperation: {
         break;
       }
       case ProcessorPhase.StoreResult: {

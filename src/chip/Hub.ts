@@ -1,11 +1,11 @@
 import { BehaviorSubject } from "rxjs";
 import { SystemClock } from "./SystemClock.js";
 import type { MainRam } from "./MainRam.js";
-import type { BaseOperation } from "../operation-implementations/BaseOperation.js";
+import type { Operation } from "../Operation.js";
 
 type PendingHubOperation = {
   cogId: number;
-  operation: BaseOperation;
+  operation: Operation;
   completion: {
     resolve: (value: void | Promise<void>) => void;
     reject: (reason?: any) => void;
@@ -65,7 +65,7 @@ export class Hub {
 
   private setPendingOperation(
     cogId: number,
-    operation: BaseOperation
+    operation: Operation
   ): Promise<void> {
     const { promise, resolve, reject } = Promise.withResolvers<void>();
     const current = [...this.pendingOperations.getValue()];
@@ -85,7 +85,7 @@ export class Hub {
     return promise;
   }
 
-  requestHubOperation(cogId: number, operation: BaseOperation): Promise<void> {
+  requestHubOperation(cogId: number, operation: Operation): Promise<void> {
     return this.setPendingOperation(cogId, operation);
   }
 

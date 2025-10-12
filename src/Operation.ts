@@ -1,4 +1,6 @@
 export interface Operation {
+  readonly hubOperation: boolean;
+
   fetchDstOperand(): void;
   fetchSrcOperand(): void;
   performOperation(): Promise<void>;

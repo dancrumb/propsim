@@ -10,8 +10,9 @@ import { h16 } from "../utils/val-display.js";
 import { CogProcessor } from "./CogProcessor.js";
 import { CogPipeline } from "./CogPipeline.js";
 import type { Operation } from "../Operation.js";
+import EventEmitter from "node:events";
 
-export class Cog {
+export class Cog extends EventEmitter {
   private ram = new CogRam();
   private registers: CogRegisters;
   public readonly running$ = new BehaviorSubject<boolean>(false);
@@ -33,6 +34,8 @@ export class Cog {
     systemCounter: SystemCounter,
     public readonly id: number
   ) {
+    super();
+
     this.registers = new CogRegisters(systemCounter);
     this.pipeline = new CogPipeline(this, systemClock);
     this.processor = new CogProcessor(
@@ -41,6 +44,10 @@ export class Cog {
       this.pipeline,
       this.running$
     );
+
+    systemClock.tick$.subscribe(() => {
+      this.emit("tick");
+    });
 
     this.flags$ = combineLatest({ Z: this.flags.Z$, C: this.flags.C$ });
 
@@ -129,5 +136,13 @@ export class Cog {
 
   get C() {
     return this.flags.C;
+  }
+
+  holdPipeline() {
+    this.pipeline.waitForSync();
+  }
+
+  syncPipeline() {
+    this.pipeline.sync();
   }
 }

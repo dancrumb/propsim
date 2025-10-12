@@ -4,7 +4,7 @@ export class COGSTOPOperation extends BaseOperation {
   public override readonly hubOperation = true;
   private allCogsRunning: boolean = false;
 
-  override performOperation(): Promise<void> {
+  override _execute(): Promise<void> {
     this.allCogsRunning = this.cog.hub.cogStatuses$.getValue().every((c) => c);
     this.cog.stop();
     return Promise.resolve();

@@ -25,7 +25,7 @@ enum PipelinePhase {
 export class CogPipeline {
   public running: boolean = false;
   private currentInstruction: number = 0;
-  private _currentOperation: BehaviorSubject<Operation | null> =
+  private currentOperation$: BehaviorSubject<Operation | null> =
     new BehaviorSubject<Operation | null>(null);
   private pointer = new BehaviorSubject<number>(0);
 
@@ -60,12 +60,12 @@ export class CogPipeline {
         break;
       }
       case PipelinePhase.DecodeInstruction: {
-        this._currentOperation.next(
+        this.currentOperation$.next(
           OperationFactory.createOperation(this.currentInstruction, this.cog) ??
             new NOPOperation(this.currentInstruction, this.cog, false)
         );
         this.log(
-          `Decoded instruction ${this._currentOperation.value?.constructor.name}`
+          `Decoded instruction ${this.currentOperation$.value?.constructor.name}`
         );
         this.currentPhase$.next(PipelinePhase.UpdatePointer);
         break;
@@ -100,6 +100,16 @@ export class CogPipeline {
   }
 
   get currentOperation() {
-    return this._currentOperation.getValue();
+    return this.currentOperation$.getValue();
+  }
+
+  waitForSync() {
+    this.running = false;
+    this.currentInstruction = 0;
+    this.currentOperation$.next(null);
+  }
+
+  sync() {
+    this.running = true;
   }
 }

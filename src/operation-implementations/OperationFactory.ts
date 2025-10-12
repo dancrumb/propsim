@@ -12,6 +12,7 @@ import { JMPOperation } from "./jmp.js";
 import { SUBOperation } from "./sub.js";
 import { COGSTOPOperation } from "./cogstop.js";
 import type { Operation } from "../Operation.js";
+import { WAITCNTOperation } from "./waitcnt.js";
 
 const OPERATIONS: Partial<Record<OpCode | "NOP", typeof BaseOperation>> = {
   ABS: ABSOperation,
@@ -23,6 +24,7 @@ const OPERATIONS: Partial<Record<OpCode | "NOP", typeof BaseOperation>> = {
   JMP: JMPOperation,
   NOP: NOPOperation,
   SUB: SUBOperation,
+  WAITCNT: WAITCNTOperation,
   // Add other operations here
 };
 
@@ -34,7 +36,10 @@ export class OperationFactory {
       return null;
     }
 
-    let opCtor = OPERATIONS[instr] ?? NOPOperation;
+    let opCtor = OPERATIONS[instr];
+    if (!opCtor) {
+      throw new Error(`No implementation found for ${instr}`);
+    }
     let opCode: Operation = new NOPOperation(registerValue, cog, false);
 
     switch (con) {
