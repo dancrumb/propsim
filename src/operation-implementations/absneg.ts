@@ -6,7 +6,7 @@ export class ABSNEGOperation extends BaseOperation {
     this.signedReads = true;
   }
 
-  override performOperation(): Promise<void> {
+  override _execute(): Promise<void> {
     this.result = -Math.abs(this.srcOperand);
     return Promise.resolve();
   }

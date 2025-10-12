@@ -1,7 +1,9 @@
 import { BaseOperation } from "./BaseOperation.js";
 
 export class ADDSOperation extends BaseOperation {
-  override performOperation(): Promise<void> {
+  override signedReads = true;
+
+  override _execute(): Promise<void> {
     this.result = this.srcOperand + this.destOperand;
     return Promise.resolve();
   }

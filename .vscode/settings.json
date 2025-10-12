@@ -4,5 +4,5 @@
     "source.addMissingImports.ts": "always",
     "source.organizeImports.ts": "always"
   },
-  "cSpell.words": ["COGINIT", "zcri"]
+  "cSpell.words": ["ABSNEG", "COGINIT", "zcri"]
 }

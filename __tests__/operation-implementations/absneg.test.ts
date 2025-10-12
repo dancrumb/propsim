@@ -1,95 +1,92 @@
 import { describe, it, expect } from "vitest";
-import { CogRam } from "../../src/CogRam.js";
-import { CogFlags } from "../../src/chip/CogFlags.js";
-import { ABSNEG } from "../../src/operation-implementations/absneg.js";
+import { ABSNEGOperation } from "../../src/operation-implementations/absneg.js";
+import { getTestCog } from "./getTestCog.js";
+import { encodeOpcode } from "../../src/encodeOpcode.js";
+import { runOperation } from "./runOperation.js";
 
 describe("ABSNEG", () => {
   it("should correctly compute the absolute value and set flags for a negative number", async () => {
-    const cogRam = new CogRam();
-    const cogFlags = new CogFlags();
+    const cog = getTestCog();
 
-    cogRam.writeRegister(0x50, -12345); // Source address with a negative value
+    cog.writeRegister(0x50, -12345); // Source address with a negative value
 
-    await ABSNEG(
-      {
+    const absNeg = new ABSNEGOperation(
+      encodeOpcode({
         instr: "ABSNEG",
         zcri: 0b1110,
-        con: 0b1111,
+        con: "ALWAYS",
         dest: 0x30,
         src: 0x50,
-      },
-      cogRam,
-      cogFlags
+      }),
+      cog
     );
+    await runOperation(absNeg);
 
-    expect(cogRam.readRegister(0x30)).toBe(-12345);
-    expect(cogFlags._Z).toBe(false);
-    expect(cogFlags.C).toBe(true);
+    expect(cog.readRegister(0x30)).toBe(-12345);
+    expect(cog.Z).toBe(false);
+    expect(cog.C).toBe(true);
   });
   it("should correctly compute the absolute value and set flags for a positive number", async () => {
-    const cogRam = new CogRam();
-    const cogFlags = new CogFlags();
+    const cog = getTestCog();
 
-    cogRam.writeRegister(0x50, 12345); // Source address with a negative value
+    cog.writeRegister(0x50, 12345); // Source address with a negative value
 
-    await ABSNEG(
-      {
+    const absNeg = new ABSNEGOperation(
+      encodeOpcode({
         instr: "ABSNEG",
         zcri: 0b1110,
-        con: 0b1111,
+        con: "ALWAYS",
         dest: 0x30,
         src: 0x50,
-      },
-      cogRam,
-      cogFlags
+      }),
+      cog
     );
+    await runOperation(absNeg);
 
-    expect(cogRam.readRegister(0x30)).toBe(-12345);
-    expect(cogFlags._Z).toBe(false);
-    expect(cogFlags.C).toBe(false);
+    expect(cog.readRegister(0x30)).toBe(-12345);
+    expect(cog.Z).toBe(false);
+    expect(cog.C).toBe(false);
   });
   it("should correctly compute the absolute value and set flags for zero", async () => {
-    const cogRam = new CogRam();
-    const cogFlags = new CogFlags();
+    const cog = getTestCog();
 
-    cogRam.writeRegister(0x50, 0); // Source address with a negative value
+    cog.writeRegister(0x50, 0); // Source address with a negative value
 
-    await ABSNEG(
-      {
+    const absNeg = new ABSNEGOperation(
+      encodeOpcode({
         instr: "ABSNEG",
         zcri: 0b1110,
-        con: 0b1111,
+        con: "ALWAYS",
         dest: 0x30,
         src: 0x50,
-      },
-      cogRam,
-      cogFlags
+      }),
+      cog
     );
+    await runOperation(absNeg);
 
-    expect(cogRam.readRegister(0x30)).toBe(0);
-    expect(cogFlags._Z).toBe(true);
-    expect(cogFlags.C).toBe(false);
+    expect(cog.readRegister(0x30)).toBe(0);
+    expect(cog.Z).toBe(true);
+    expect(cog.C).toBe(false);
   });
   it("should correctly compute the absolute value and set flags for an immediate value", async () => {
-    const cogRam = new CogRam();
-    const cogFlags = new CogFlags();
+    const cog = getTestCog();
 
-    cogRam.writeRegister(0x50, 0); // Source address with a negative value
+    cog.writeRegister(0x50, 0); // Source address with a negative value
 
-    await ABSNEG(
-      {
+    const absNeg = new ABSNEGOperation(
+      encodeOpcode({
         instr: "ABSNEG",
         zcri: 0b1111,
-        con: 0b1111,
+        con: "ALWAYS",
         dest: 0x30,
         src: 0x50,
-      },
-      cogRam,
-      cogFlags
+      }),
+      cog
     );
+    await runOperation(absNeg);
 
-    expect(cogRam.readRegister(0x30)).toBe(-0x50);
-    expect(cogFlags._Z).toBe(false);
-    expect(cogFlags.C).toBe(false);
+    expect(cog.readRegister(0x30)).toBe(-0x50);
+    expect(cog.Z).toBe(false);
+    expect(cog.C).toBe(false);
   });
 });
