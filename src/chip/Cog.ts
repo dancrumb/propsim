@@ -1,7 +1,7 @@
 import EventEmitter from "node:events";
 import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import type { Operation } from "../Operation.js";
-import { h16 } from "../utils/val-display.js";
+import { h16, h32 } from "../utils/val-display.js";
 import { CogFlags } from "./CogFlags.js";
 import { CogPipeline } from "./CogPipeline.js";
 import { CogProcessor } from "./CogProcessor.js";
@@ -24,6 +24,8 @@ export class Cog extends EventEmitter {
 
   public readonly pc$: Observable<number>;
   public readonly currentOperation$: Observable<Operation>;
+
+  public debug = true;
 
   private programCounter$ = new BehaviorSubject<number>(0);
 
@@ -60,7 +62,7 @@ export class Cog extends EventEmitter {
     });
   }
 
-  private log(message: string) {
+  public log(message: string) {
     process.stderr.write(`[COG ${this.id}] ${message}\n`);
   }
 
@@ -99,6 +101,10 @@ export class Cog extends EventEmitter {
   }
 
   writeRegister(index: number, value: number) {
+    if (this.debug) {
+      this.log(`Writing ${h32(value)} to register ${h16(index)}`);
+    }
+
     if (index >= 0x1f0) {
       this.registers.writeRegister(index, value);
     } else {
@@ -107,6 +113,9 @@ export class Cog extends EventEmitter {
   }
 
   writeURegister(index: number, value: number) {
+    if (this.debug) {
+      this.log(`Writing ${h32(value >>> 0)} to register ${h16(index)}`);
+    }
     if (index >= 0x1f0) {
       this.registers.writeRegister(index, value);
     } else {
