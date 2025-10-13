@@ -56,6 +56,8 @@ export class CogProcessor {
       case ProcessorPhase.PerformOperation: {
         let opComplete: Promise<void>;
         if (this.currentOperation$.value.hubOperation) {
+          this.cog.holdPipeline();
+
           opComplete = this.cog.hub.requestHubOperation(
             this.cog.id,
             this.currentOperation$.value
@@ -64,6 +66,9 @@ export class CogProcessor {
           opComplete = this.currentOperation$.value.performOperation();
         }
         opComplete.then(() => {
+          if (this.currentOperation$.value.hubOperation) {
+            this.cog.syncPipeline();
+          }
           this.currentPhase$.next(ProcessorPhase.StoreResult);
         });
         this.currentPhase$.next(ProcessorPhase.PerformingOperation);
