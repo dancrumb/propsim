@@ -88,11 +88,7 @@ export class BaseOperation implements Operation {
 
   storeResult(): void {
     if (this.writeResult) {
-      if (this.signedReads) {
-        this.cog.writeRegister(this.storeAddress, this.result & 0xffffffff);
-      } else {
-        this.cog.writeURegister(this.storeAddress, this.result & 0xffffffff);
-      }
+      this.cog.writeURegister(this.storeAddress, this.result >>> 0);
     }
   }
 

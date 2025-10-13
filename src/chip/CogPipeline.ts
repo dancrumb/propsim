@@ -37,7 +37,7 @@ export class CogPipeline {
 
   private log(message: string) {
     process.stderr.write(
-      `[COG ${this.cog.id} | ${
+      `[PIP ${this.cog.id} | ${
         this.currentOperation?.constructor.name.replace("Operation", "") ??
         "<none>"
       } <S: ${this.currentOperation?.src}> <D: ${

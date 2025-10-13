@@ -20,36 +20,44 @@ export class CogProcessor {
   public readonly currentOperation$: BehaviorSubject<Operation>;
 
   private currentPhase$ = new BehaviorSubject<ProcessorPhase>(
-    ProcessorPhase.FetchDstOperand
+    ProcessorPhase.FetchSrcOperand
   );
 
   private programCounter$: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);
 
   private log(message: string) {
-    process.stderr.write(`[COG ${this.cog.id}]: ${message}\n`);
+    const currentOperation = this.currentOperation$.getValue();
+    process.stderr.write(
+      `[COG ${this.cog.id} | ${
+        currentOperation?.constructor.name.replace("Operation", "") ?? "<none>"
+      } <S: ${currentOperation?.src}> <D: ${currentOperation?.dst}> <R: ${
+        currentOperation?.res
+      }> ]: ${message}\n`
+    );
   }
 
   private processTick({ running }: { running: boolean }) {
     if (!running) {
       return;
     }
+    const currentOperation = this.pipeline.currentOperation;
+    if (currentOperation === null) {
+      return;
+    }
     const phase = this.currentPhase$.value;
     this.log(`In phase: ${ProcessorPhase[phase]}`);
     switch (phase) {
-      case ProcessorPhase.FetchDstOperand: {
-        const currentOperation = this.pipeline.currentOperation;
-        if (currentOperation === null) {
-          return;
-        }
+      case ProcessorPhase.FetchSrcOperand: {
         this.currentOperation$.next(currentOperation);
+        this.currentOperation$.value.fetchSrcOperand();
         this.programCounter$.next(this.pipeline.readAheadPointer);
-        this.currentOperation$.value.fetchDstOperand();
-        this.currentPhase$.next(ProcessorPhase.FetchSrcOperand);
+
+        this.currentPhase$.next(ProcessorPhase.FetchDstOperand);
         break;
       }
-      case ProcessorPhase.FetchSrcOperand: {
-        this.currentOperation$.value.fetchSrcOperand();
+      case ProcessorPhase.FetchDstOperand: {
+        this.currentOperation$.value.fetchDstOperand();
         this.currentPhase$.next(ProcessorPhase.PerformOperation);
         break;
       }
@@ -80,7 +88,7 @@ export class CogProcessor {
       }
       case ProcessorPhase.StoreResult: {
         this.currentOperation$.value.storeResult();
-        this.currentPhase$.next(ProcessorPhase.FetchDstOperand);
+        this.currentPhase$.next(ProcessorPhase.FetchSrcOperand);
 
         break;
       }
