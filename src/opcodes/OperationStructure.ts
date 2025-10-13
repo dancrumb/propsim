@@ -1,4 +1,4 @@
-import { CON, type Condition } from "../condition.js";
+import { type Condition } from "../condition.js";
 import type { OpCode } from "./opcodes.js";
 
 export type OperationStructure = {
@@ -11,8 +11,6 @@ export type OperationStructure = {
 
 const h16 = (n: number) => n.toString(16).padStart(4, "0");
 const b4 = (n: number) => n.toString(2).padStart(4, "0");
-
-process.stderr.write(`CONDITIONS: ${JSON.stringify(CON)}\n`);
 
 export const renderOperation = (
   currentOperation: OperationStructure | null

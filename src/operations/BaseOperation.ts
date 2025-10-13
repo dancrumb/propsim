@@ -88,11 +88,6 @@ export class BaseOperation implements Operation {
 
   storeResult(): void {
     if (this.writeResult) {
-      process.stderr.write(
-        `  Writing result ${this.result & 0xffffffff} to ${
-          this.storeAddress
-        } (as ${this.signedReads ? "signed" : "unsigned"})\n`
-      );
       if (this.signedReads) {
         this.cog.writeRegister(this.storeAddress, this.result & 0xffffffff);
       } else {
@@ -137,11 +132,9 @@ export class BaseOperation implements Operation {
     await this._execute();
 
     if (this.zFlag) {
-      process.stderr.write(`  Setting Z flag\n`);
       this.setZ();
     }
     if (this.cFlag) {
-      process.stderr.write(`  Setting C flag\n`);
       this.setC();
     }
   }

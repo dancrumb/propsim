@@ -1,21 +1,17 @@
 import { Box, Text, useInput, useStdout } from "ink";
 import React, { useRef } from "react";
-import { inspect } from "util";
-import { Cog } from "./chip/Cog.js";
+import type { Cog } from "./chip/Cog.js";
 import { Propeller } from "./chip/Propeller.js";
 import CogsDisplay from "./ui/CogsDisplay.js";
 import HubDisplay from "./ui/HubDisplay.js";
 import RunControl, { type RunSpeed } from "./ui/RunControl.js";
 import SystemClockDisplay from "./ui/SystemClockDisplay.js";
 
-const propeller = new Propeller("./simple.binary");
-process.stderr.write(inspect(propeller.powerOn()) + "\n");
+export default function Demo({ propeller }: { propeller: Propeller }) {
+  const systemClock = propeller.systemClock;
+  const hub = propeller.hub;
+  const cogs: Array<Cog> = propeller.cogs;
 
-const systemClock = propeller.systemClock;
-const hub = propeller.hub;
-const cogs: Array<Cog> = propeller.cogs;
-
-export default function Demo() {
   const { stdout } = useStdout();
   const [currentCog, setCurrentCog] = React.useState(
     Math.max(

@@ -11,12 +11,12 @@
     "react": "^19.2.0",
     "rxjs": "^7.8.2",
     "ts-essentials": "^10.1.1",
-    "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "unicoderegexp": "^0.4.1",
     "vitest": "^3.2.4"
   },
   "scripts": {
+    "start": "tsx ./src/propsim.tsx",
     "build": "tsc",
     "test": "vitest",
     "check": "tsc --noEmit"
@@ -24,6 +24,7 @@
   "devDependencies": {
     "@types/node": "^24.6.2",
     "@types/react": "^19.2.0",
+    "tsx": "^4.20.6",
     "turbo": "^2.5.8"
   },
   "packageManager": "pnpm@10.18.0+sha256.3967a3efe2909df305fec4b833a304dfca17c380b6bb77672f4dac4f2cdd3788"
