@@ -8,8 +8,10 @@ export class SystemClock {
   constructor() {}
 
   stepForward(ticks: number = 1) {
-    this.tickCount += ticks;
-    this.tickSubject.next(this.tickCount);
+    for (let t = 0; t < ticks; t++) {
+      this.tickCount++;
+      this.tickSubject.next(this.tickCount);
+    }
   }
 
   getTicks(): number {

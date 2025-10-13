@@ -13,6 +13,14 @@ export class MainRam {
     fileBuf.copy(this.buf);
   }
 
+  writeByte(address: number, value: number) {
+    this.buf.writeUInt8(value & 0xff, address);
+  }
+
+  writeWord(address: number, value: number) {
+    this.buf.writeUInt16LE(value & 0xffff, address & 0xfe);
+  }
+
   writeLong(address: number, value: number) {
     this.buf.writeInt32LE(value, address & 0xfc);
   }

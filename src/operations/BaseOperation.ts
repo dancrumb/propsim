@@ -33,6 +33,8 @@ export class BaseOperation implements Operation {
     return Promise.resolve();
   }
 
+  protected _complete() {}
+
   protected roles: {
     src: RegisterRole;
     dest: RegisterRole;
@@ -89,6 +91,9 @@ export class BaseOperation implements Operation {
   storeResult(): void {
     if (this.writeResult) {
       this.cog.writeURegister(this.storeAddress, this.result >>> 0);
+    }
+    if (this._complete) {
+      this._complete();
     }
   }
 

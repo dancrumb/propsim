@@ -2,6 +2,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import type { Operation } from "../Operation.js";
 import { NOPOperation } from "../operations/implementations/nop.js";
 import { OperationFactory } from "../operations/OperationFactory.js";
+import { h16 } from "../utils/val-display.js";
 import type { Cog } from "./Cog.js";
 import type { SystemClock } from "./SystemClock.js";
 
@@ -71,11 +72,7 @@ export class CogPipeline {
         break;
       }
       case PipelinePhase.UpdatePointer: {
-        const op = this.currentOperation;
-        if (op === null) {
-          throw new Error("No current operation in UpdatePointer phase");
-        }
-        this.pointer.next(op.getNextExpectedPC());
+        this.refreshPointer();
         this.currentPhase$.next(PipelinePhase.UpdatePC);
         break;
       }
@@ -103,13 +100,38 @@ export class CogPipeline {
     return this.currentOperation$.getValue();
   }
 
+  refreshPointer() {
+    const op = this.currentOperation;
+    if (op === null) {
+      throw new Error("No current operation while refreshing pointer");
+    }
+    const nextPc = op.getNextExpectedPC();
+    if (this.cog.debug) {
+      this.log(`Refreshing pipeline pointer to ${h16(nextPc)}`);
+    }
+    this.pointer.next(nextPc);
+  }
+
+  reset() {
+    this.refreshPointer();
+    this.currentInstruction = 0;
+    this.currentOperation$.next(null);
+    this.currentPhase$.next(PipelinePhase.ReadInstruction);
+  }
+
   waitForSync() {
+    if (this.cog.debug) {
+      this.log("Holding pipeline for sync");
+    }
     this.running = false;
     this.currentInstruction = 0;
     this.currentOperation$.next(null);
   }
 
   sync() {
+    if (this.cog.debug) {
+      this.log("Resyncing pipeline");
+    }
     this.running = true;
   }
 }

@@ -23,6 +23,11 @@ await readdirSync(`${import.meta.dirname}/implementations`).map(
       if (exportName.endsWith("Operation")) {
         const inst = exportName.replace("Operation", "");
         if (isOpCode(inst)) {
+          if (OPERATIONS[inst]) {
+            throw new Error(
+              `Duplicate operation implementation for ${inst} - probably forgot to change the class name?`
+            );
+          }
           OPERATIONS[inst] = exportValue as new () => Operation;
         }
       }

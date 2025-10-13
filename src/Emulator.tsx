@@ -41,6 +41,8 @@ export default function Demo({ propeller }: { propeller: Propeller }) {
       systemClock.stepForward(1);
     } else if (["0", "1", "2", "3", "4", "5", "6", "7"].includes(input)) {
       setCurrentCog(parseInt(input, 10));
+    } else if (input === "c") {
+      systemClock.stepForward(4);
     }
   });
 

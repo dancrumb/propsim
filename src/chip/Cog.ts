@@ -153,4 +153,12 @@ export class Cog extends EventEmitter {
   syncPipeline() {
     this.pipeline.sync();
   }
+
+  refreshPipeline() {
+    this.pipeline.refreshPointer();
+  }
+
+  resetPipeline() {
+    this.pipeline.reset();
+  }
 }
