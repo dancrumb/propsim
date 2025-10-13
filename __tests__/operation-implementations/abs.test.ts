@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
-import { ABSOperation } from "../../src/operation-implementations/abs.js";
-import { encodeOpcode } from "../../src/encodeOpcode.js";
+import { describe, expect, it } from "vitest";
+import { encodeOpcode } from "../../src/opcodes/encodeOpcode.js";
+import { ABSOperation } from "../../src/operations/implementations/abs.js";
 import { getTestCog } from "./getTestCog.js";
 import { runOperation } from "./runOperation.js";
 

@@ -1,7 +1,7 @@
-import { describe, it, expect } from "vitest";
-import { ADDOperation } from "../../src/operation-implementations/add.js";
+import { describe, expect, it } from "vitest";
+import { encodeOpcode } from "../../src/opcodes/encodeOpcode.js";
+import { ADDOperation } from "../../src/operations/implementations/add.js";
 import { getTestCog } from "./getTestCog.js";
-import { encodeOpcode } from "../../src/encodeOpcode.js";
 import { runOperation } from "./runOperation.js";
 
 describe("ADD", () => {
