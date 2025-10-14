@@ -3,7 +3,6 @@ import { BehaviorSubject, combineLatest, Observable } from "rxjs";
 import type { Operation } from "../Operation.js";
 import { h16, h32 } from "../utils/val-display.js";
 import { CogFlags } from "./CogFlags.js";
-import { CogPipeline } from "./CogPipeline.js";
 import { CogProcessor } from "./CogProcessor.js";
 import { CogRam } from "./CogRam.js";
 import { CogRegisters } from "./CogRegisters.js";
@@ -20,10 +19,9 @@ export class Cog extends EventEmitter {
   public readonly flags$: Observable<{ Z: boolean; C: boolean }>;
 
   private processor: CogProcessor;
-  private pipeline: CogPipeline;
 
   public readonly pc$: Observable<number>;
-  public readonly currentOperation$: Observable<Operation>;
+  public readonly currentOperation$: Observable<Operation | null>;
 
   public debug = true;
 
@@ -38,13 +36,7 @@ export class Cog extends EventEmitter {
     super();
 
     this.registers = new CogRegisters(systemCounter);
-    this.pipeline = new CogPipeline(this, systemClock);
-    this.processor = new CogProcessor(
-      this,
-      systemClock,
-      this.pipeline,
-      this.running$
-    );
+    this.processor = new CogProcessor(this, systemClock, this.running$);
 
     systemClock.tick$.subscribe(() => {
       this.emit("tick");
@@ -56,10 +48,6 @@ export class Cog extends EventEmitter {
 
     this.pc$ = this.programCounter$.asObservable();
     this.currentOperation$ = this.processor.currentOperation$.asObservable();
-
-    this.running$.subscribe((isRunning) => {
-      this.pipeline.running = isRunning;
-    });
   }
 
   public log(message: string) {
@@ -128,7 +116,7 @@ export class Cog extends EventEmitter {
   }
 
   get readAhead$() {
-    return this.pipeline.readAheadPointer$;
+    return this.processor.readAhead$;
   }
 
   updateZFlag(set: boolean) {
@@ -146,19 +134,7 @@ export class Cog extends EventEmitter {
     return this.flags.C;
   }
 
-  holdPipeline() {
-    this.pipeline.waitForSync();
-  }
-
-  syncPipeline() {
-    this.pipeline.sync();
-  }
-
-  refreshPipeline() {
-    this.pipeline.refreshPointer();
-  }
-
   resetPipeline() {
-    this.pipeline.reset();
+    this.processor.resetPipeline();
   }
 }

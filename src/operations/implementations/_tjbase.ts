@@ -5,6 +5,9 @@ export class TJBase extends BaseOperation {
   protected doJump: boolean = true;
 
   protected override _execute(): Promise<void> {
+    if (!this.doJump) {
+      this.cog.resetPipeline();
+    }
     return Promise.resolve();
   }
 
@@ -13,17 +16,11 @@ export class TJBase extends BaseOperation {
   }
 
   override getNextExpectedPC(): number {
-    this.fetchDstOperand();
+    this.fetchSrcOperand();
     if (this.doJump) {
       return this.srcOperand;
     }
 
     return super.getNextExpectedPC();
-  }
-
-  override _complete(): void {
-    if (!this.doJump) {
-      this.cog.resetPipeline();
-    }
   }
 }

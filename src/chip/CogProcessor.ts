@@ -1,11 +1,14 @@
 import { BehaviorSubject, combineLatest, type Observable } from "rxjs";
 import type { Operation } from "../Operation.js";
 import { NOPOperation } from "../operations/implementations/nop.js";
+import { OperationFactory } from "../operations/OperationFactory.js";
+import { h16 } from "../utils/val-display.js";
 import type { Cog } from "./Cog.js";
-import type { CogPipeline } from "./CogPipeline.js";
 import type { SystemClock } from "./SystemClock.js";
 
 enum ProcessorPhase {
+  FetchInstruction,
+  DecodeInstruction,
   FetchDstOperand,
   FetchSrcOperand,
   PerformOperation,
@@ -17,14 +20,27 @@ enum ProcessorPhase {
  * The CogProcessor represents the actual processing unit of a Cog
  */
 export class CogProcessor {
-  public readonly currentOperation$: BehaviorSubject<Operation>;
+  public readonly currentOperation$: BehaviorSubject<Operation | null>;
 
   private currentPhase$ = new BehaviorSubject<ProcessorPhase>(
-    ProcessorPhase.FetchSrcOperand
+    ProcessorPhase.FetchInstruction
   );
+
+  private currentInstruction: number = 0;
 
   private programCounter$: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);
+
+  private nextOperationPtr$ = new BehaviorSubject<number>(0);
+
+  public readonly readAhead$: Observable<number> =
+    this.nextOperationPtr$.asObservable();
+
+  private debugLog(message: string) {
+    if (this.cog.debug) {
+      this.log(message);
+    }
+  }
 
   private log(message: string) {
     const currentOperation = this.currentOperation$.getValue();
@@ -37,49 +53,71 @@ export class CogProcessor {
     );
   }
 
+  private fetchInstruction() {
+    const instLocation = this.nextOperationPtr$.getValue();
+    this.debugLog(`Fetching instruction at ${instLocation}`);
+    this.currentInstruction = this.cog.readURegister(instLocation);
+  }
+
   private processTick({ running }: { running: boolean }) {
     if (!running) {
       return;
     }
-    const currentOperation = this.pipeline.currentOperation;
-    if (currentOperation === null) {
-      return;
-    }
+    const currentOperation = this.currentOperation$.getValue();
+
     const phase = this.currentPhase$.value;
-    this.log(`In phase: ${ProcessorPhase[phase]}`);
+    this.debugLog(`In phase: ${ProcessorPhase[phase]}`);
     switch (phase) {
-      case ProcessorPhase.FetchSrcOperand: {
-        this.currentOperation$.next(currentOperation);
-        this.currentOperation$.value.fetchSrcOperand();
-        this.programCounter$.next(this.pipeline.readAheadPointer);
+      case ProcessorPhase.FetchInstruction: {
+        this.fetchInstruction();
+
+        this.currentPhase$.next(ProcessorPhase.DecodeInstruction);
+        break;
+      }
+      case ProcessorPhase.DecodeInstruction: {
+        this.currentOperation$.next(
+          OperationFactory.createOperation(this.currentInstruction, this.cog) ??
+            new NOPOperation(this.currentInstruction, this.cog, false)
+        );
 
         this.currentPhase$.next(ProcessorPhase.FetchDstOperand);
         break;
       }
       case ProcessorPhase.FetchDstOperand: {
-        this.currentOperation$.value.fetchDstOperand();
+        currentOperation?.fetchDstOperand();
+
+        this.currentPhase$.next(ProcessorPhase.FetchSrcOperand);
+        break;
+      }
+      case ProcessorPhase.FetchSrcOperand: {
+        if (currentOperation !== null) {
+          currentOperation.fetchSrcOperand();
+          this.nextOperationPtr$.next(currentOperation.getNextExpectedPC());
+        }
+
         this.currentPhase$.next(ProcessorPhase.PerformOperation);
         break;
       }
       case ProcessorPhase.PerformOperation: {
-        let opComplete: Promise<void>;
-        if (this.currentOperation$.value.hubOperation) {
-          this.cog.holdPipeline();
+        this.fetchInstruction();
 
-          opComplete = this.cog.hub.requestHubOperation(
-            this.cog.id,
-            this.currentOperation$.value
-          );
-        } else {
-          opComplete = this.currentOperation$.value.performOperation();
-        }
-        opComplete.then(() => {
-          if (this.currentOperation$.value.hubOperation) {
-            this.cog.syncPipeline();
+        if (currentOperation !== null) {
+          let opComplete: Promise<void>;
+          if (currentOperation.hubOperation) {
+            opComplete = this.cog.hub.requestHubOperation(
+              this.cog.id,
+              currentOperation
+            );
+          } else {
+            opComplete = currentOperation.performOperation();
           }
+          opComplete.then(() => {
+            this.currentPhase$.next(ProcessorPhase.StoreResult);
+          });
+          this.currentPhase$.next(ProcessorPhase.PerformingOperation);
+        } else {
           this.currentPhase$.next(ProcessorPhase.StoreResult);
-        });
-        this.currentPhase$.next(ProcessorPhase.PerformingOperation);
+        }
 
         break;
       }
@@ -87,9 +125,25 @@ export class CogProcessor {
         break;
       }
       case ProcessorPhase.StoreResult: {
-        this.currentOperation$.value.storeResult();
-        this.currentPhase$.next(ProcessorPhase.FetchSrcOperand);
+        if (currentOperation !== null) {
+          currentOperation.storeResult();
+        }
 
+        this.debugLog(`Current Instruction: ${h16(this.currentInstruction)}`);
+        if (this.currentInstruction > 0) {
+          this.programCounter$.next(this.nextOperationPtr$.getValue());
+          this.currentOperation$.next(
+            OperationFactory.createOperation(
+              this.currentInstruction,
+              this.cog
+            ) ?? new NOPOperation(this.currentInstruction, this.cog, false)
+          );
+        } else {
+          this.debugLog("Pipeline was reset");
+          this.currentOperation$.next(null);
+        }
+
+        this.currentPhase$.next(ProcessorPhase.FetchDstOperand);
         break;
       }
 
@@ -104,12 +158,9 @@ export class CogProcessor {
   constructor(
     private cog: Cog,
     systemClock: SystemClock,
-    private pipeline: CogPipeline,
     running$: Observable<boolean>
   ) {
-    this.currentOperation$ = new BehaviorSubject<Operation>(
-      new NOPOperation(0, cog, false)
-    );
+    this.currentOperation$ = new BehaviorSubject<Operation | null>(null);
 
     combineLatest({
       running: running$,
@@ -129,5 +180,13 @@ export class CogProcessor {
 
   readRegister(regNum: number): number {
     return this.cog.readURegister(regNum);
+  }
+
+  resetPipeline() {
+    this.debugLog("Resetting pipeline");
+    this.currentInstruction = 0;
+    this.nextOperationPtr$.next(
+      this.currentOperation$.value!.getNextExpectedPC()
+    );
   }
 }
