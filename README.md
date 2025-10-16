@@ -6,6 +6,12 @@ You can load up binaries and run your programs on a system that emulates the 8 c
 
 It support stepping one clock tick at a time, or running at a rate of 1 or 2 ticks per second.
 
+## Getting Started
+
+I use `pnpm` for this package, so you'll need to [install that first](https://pnpm.io/installation).
+
+Then, run `pnpm install` to install all the dependencies.
+
 ## Usage
 
 To use the emulator, run:
@@ -19,6 +25,7 @@ This will load the binary into the Propeller. It will then attempt to run the Sp
 ## Controls:
 
 - `t`: advance one clock tick
+- `c`: advance one cycle (4 clock ticks)
 - `>`: increase autorun speed
 - `|`: pause autorun
 - `0` - `7`: switch cog
