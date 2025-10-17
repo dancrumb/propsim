@@ -29,3 +29,18 @@ export function encodeOpcode(operation: OperationStructure): number {
     0
   );
 }
+
+export const op = (
+  instr: OperationStructure["instr"],
+  zcri: OperationStructure["zcri"],
+  con: OperationStructure["con"],
+  dest: OperationStructure["dest"],
+  src: OperationStructure["src"]
+) =>
+  encodeOpcode({
+    instr,
+    zcri,
+    con,
+    dest,
+    src,
+  });
