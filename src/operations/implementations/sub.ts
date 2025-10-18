@@ -1,13 +1,8 @@
 import { BaseOperation } from "../BaseOperation.js";
 
 export class SUBOperation extends BaseOperation {
-  protected override roles = {
-    src: { read: "value", write: "none" },
-    dest: { read: "address", write: "value" },
-  } as const;
-
   override _execute(): Promise<void> {
-    this.result = this.destOperand - this.srcOperand;
+    this.result = (this.destOperand >>> 0) - (this.srcOperand >>> 0);
     return Promise.resolve();
   }
 
@@ -16,6 +11,6 @@ export class SUBOperation extends BaseOperation {
   }
 
   override setC(): void {
-    this.cog.updateCFlag(this.result > 0xffffffff);
+    this.cog.updateCFlag(this.srcOperand > this.destOperand);
   }
 }
