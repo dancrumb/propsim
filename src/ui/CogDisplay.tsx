@@ -23,7 +23,7 @@ export default function CogDisplay({
   const size = 16;
 
   const currentInstructionValue = useObservableState(
-    cog.pc$.pipe(map((pc) => cog.readURegister(pc)))
+    cog.pc$.pipe(map((pc) => cog.readRegister(pc) >>> 0))
   );
 
   useInput((_input, key) => {

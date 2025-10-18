@@ -66,7 +66,7 @@ export default function RamDisplay({
           </Box>
           <Box width={8}>
             <Text>
-              {ram.readURegister(i).toString(16).toUpperCase().padStart(8, "0")}
+              {ram.readRegister(i).toString(16).toUpperCase().padStart(8, "0")}
             </Text>
           </Box>
         </Box>

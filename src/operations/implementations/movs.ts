@@ -13,7 +13,11 @@ export class MOVSOperation extends BaseOperation {
     this.cog.updateZFlag((this.srcOperand & 0x1ff) === 0);
   }
 
+  // This behavior is inferred because the manual does not make it clear
+  // Essentially, C is set if the MSB of the source is set and the destination changes
   override setC(): void {
-    this.cog.updateCFlag((this.srcOperand & 0b100000000) !== 0);
+    this.cog.updateCFlag(
+      (this.srcOperand & 0b100000000) !== 0 && this.result !== this.destOperand
+    );
   }
 }

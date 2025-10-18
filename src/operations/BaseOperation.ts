@@ -75,22 +75,20 @@ export class BaseOperation implements Operation {
   }
 
   fetchDstOperand(): void {
-    this.destOperand = this.cog.readURegister(this.destValue);
+    this.destOperand = this.cog.readRegister(this.destValue);
   }
 
   fetchSrcOperand(): void {
     if (this.iFlag) {
       this.srcOperand = this.srcValue;
-    } else if (this.signedReads) {
-      this.srcOperand = this.cog.readRegister(this.srcValue);
     } else {
-      this.srcOperand = this.cog.readURegister(this.srcValue);
+      this.srcOperand = this.cog.readRegister(this.srcValue);
     }
   }
 
   storeResult(): void {
     if (this.writeResult) {
-      this.cog.writeURegister(this.storeAddress, this.result >>> 0);
+      this.cog.writeRegister(this.storeAddress, this.result >>> 0);
     }
     if (this._complete) {
       this._complete();

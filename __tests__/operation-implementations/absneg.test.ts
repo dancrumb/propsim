@@ -3,6 +3,7 @@ import { encodeOpcode } from "../../src/opcodes/encodeOpcode.js";
 import { ABSNEGOperation } from "../../src/operations/implementations/absneg.js";
 import { getTestCog } from "./getTestCog.js";
 import { runOperation } from "./runOperation.js";
+import { testTruthTable } from "./test-truth-table.js";
 
 describe("ABSNEG", () => {
   it("should correctly compute the absolute value and set flags for a negative number", async () => {
@@ -22,7 +23,7 @@ describe("ABSNEG", () => {
     );
     await runOperation(absNeg);
 
-    expect(cog.readRegister(0x30)).toBe(-12345);
+    expect(cog.readSRegister(0x30)).toBe(-12345);
     expect(cog.Z).toBe(false);
     expect(cog.C).toBe(true);
   });
@@ -43,7 +44,7 @@ describe("ABSNEG", () => {
     );
     await runOperation(absNeg);
 
-    expect(cog.readRegister(0x30)).toBe(-12345);
+    expect(cog.readSRegister(0x30)).toBe(-12345);
     expect(cog.Z).toBe(false);
     expect(cog.C).toBe(false);
   });
@@ -64,7 +65,7 @@ describe("ABSNEG", () => {
     );
     await runOperation(absNeg);
 
-    expect(cog.readRegister(0x30)).toBe(0);
+    expect(cog.readSRegister(0x30)).toBe(0);
     expect(cog.Z).toBe(true);
     expect(cog.C).toBe(false);
   });
@@ -85,8 +86,17 @@ describe("ABSNEG", () => {
     );
     await runOperation(absNeg);
 
-    expect(cog.readRegister(0x30)).toBe(-0x50);
+    expect(cog.readSRegister(0x30)).toBe(-0x50);
     expect(cog.Z).toBe(false);
     expect(cog.C).toBe(false);
   });
+
+  testTruthTable(ABSNEGOperation)`
+      dest  | src    | result  | z    | c
+      ${0}  | ${1}   | ${-1}    | ${0} | ${0}
+      ${0}  | ${0}   | ${0}    | ${1} | ${0}
+      ${0}  | ${-1}  | ${-1}    | ${0} | ${1}
+      ${0}  | ${0x7fff_ffff}   | ${0x8000_0001} | ${0} | ${0}
+      ${0}  | ${0x8000_0000}   | ${0x8000_0000} | ${0} | ${1}
+      ${0}  | ${0x8000_0001}   | ${0x8000_0001} | ${0} | ${1}`;
 });

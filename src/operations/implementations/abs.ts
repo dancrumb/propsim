@@ -1,4 +1,5 @@
 import { BaseOperation } from "../BaseOperation.js";
+import { abs_val } from "./abs-val.js";
 
 export class ABSOperation extends BaseOperation {
   constructor(...args: ConstructorParameters<typeof BaseOperation>) {
@@ -7,15 +8,15 @@ export class ABSOperation extends BaseOperation {
   }
 
   override _execute(): Promise<void> {
-    this.result = Math.abs(this.srcOperand);
+    this.result = abs_val(this.srcOperand);
     return Promise.resolve();
   }
 
   override setZ(): void {
-    this.cog.updateZFlag(this.result === 0);
+    this.cog.updateZFlag(this.srcOperand === 0);
   }
 
   override setC(): void {
-    this.cog.updateCFlag(this.srcOperand < 0);
+    this.cog.updateCFlag((this.srcOperand & 0x8000_0000) !== 0);
   }
 }

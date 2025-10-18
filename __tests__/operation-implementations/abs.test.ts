@@ -3,6 +3,7 @@ import { encodeOpcode } from "../../src/opcodes/encodeOpcode.js";
 import { ABSOperation } from "../../src/operations/implementations/abs.js";
 import { getTestCog } from "./getTestCog.js";
 import { runOperation } from "./runOperation.js";
+import { testTruthTable } from "./test-truth-table.js";
 
 describe("ABS", () => {
   it("should correctly compute the absolute value and set flags for a negative number", async () => {
@@ -90,4 +91,13 @@ describe("ABS", () => {
     expect(cog.Z).toBe(false);
     expect(cog.C).toBe(false);
   });
+
+  testTruthTable(ABSOperation)`
+      dest  | src    | result  | z    | c
+      ${0}  | ${1}   | ${1}    | ${0} | ${0}
+      ${0}  | ${0}   | ${0}    | ${1} | ${0}
+      ${0}  | ${-1}  | ${1}    | ${0} | ${1}
+      ${0}  | ${0x7fff_ffff}   | ${0x7fff_ffff} | ${0} | ${0}
+      ${0}  | ${0x8000_0000}   | ${0x8000_0000} | ${0} | ${1}
+      ${0}  | ${0x8000_0001}   | ${0x7fff_ffff} | ${0} | ${1}`;
 });

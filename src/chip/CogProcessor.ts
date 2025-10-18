@@ -56,7 +56,7 @@ export class CogProcessor {
   private fetchInstruction() {
     const instLocation = this.nextOperationPtr$.getValue();
     this.debugLog(`Fetching instruction at ${instLocation}`);
-    this.currentInstruction = this.cog.readURegister(instLocation);
+    this.currentInstruction = this.cog.readRegister(instLocation) >>> 0;
   }
 
   private processTick({ running }: { running: boolean }) {
@@ -179,7 +179,7 @@ export class CogProcessor {
   }
 
   readRegister(regNum: number): number {
-    return this.cog.readURegister(regNum);
+    return this.cog.readRegister(regNum);
   }
 
   resetPipeline() {

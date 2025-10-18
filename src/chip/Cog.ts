@@ -11,7 +11,8 @@ import type { SystemClock } from "./SystemClock.js";
 import type { SystemCounter } from "./SystemCounter.js";
 
 export class Cog extends EventEmitter {
-  private ram = new CogRam();
+  public debug = true;
+  private ram = new CogRam(this.debug);
   private registers: CogRegisters;
   public readonly running$ = new BehaviorSubject<boolean>(false);
   private flags = new CogFlags();
@@ -22,8 +23,6 @@ export class Cog extends EventEmitter {
 
   public readonly pc$: Observable<number>;
   public readonly currentOperation$: Observable<Operation | null>;
-
-  public debug = true;
 
   private programCounter$ = new BehaviorSubject<number>(0);
 
@@ -81,11 +80,15 @@ export class Cog extends EventEmitter {
     return this.ram.readRegister(index);
   }
 
-  readURegister(index: number) {
+  readSRegister(index: number) {
     if (index >= 0x1f0) {
       return this.registers.readRegister(index);
     }
-    return this.ram.readURegister(index);
+    let val = this.ram.readRegister(index);
+    if (val & 0x8000_0000) {
+      val = -((~val + 1) >>> 0);
+    }
+    return val;
   }
 
   writeRegister(index: number, value: number) {
@@ -100,14 +103,14 @@ export class Cog extends EventEmitter {
     }
   }
 
-  writeURegister(index: number, value: number) {
+  writeRegister(index: number, value: number) {
     if (this.debug) {
       this.log(`Writing ${h32(value >>> 0)} to register ${h16(index)}`);
     }
     if (index >= 0x1f0) {
       this.registers.writeRegister(index, value);
     } else {
-      this.ram.writeURegister(index, value);
+      this.ram.writeRegister(index, value);
     }
   }
 

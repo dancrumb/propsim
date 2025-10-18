@@ -3,6 +3,7 @@ import { encodeOpcode } from "../../src/opcodes/encodeOpcode.js";
 import { ADDOperation } from "../../src/operations/implementations/add.js";
 import { getTestCog } from "./getTestCog.js";
 import { runOperation } from "./runOperation.js";
+import { testTruthTable } from "./test-truth-table.js";
 
 describe("ADD", () => {
   it("should correctly compute the sum and set flags for a positive result", async () => {
@@ -52,8 +53,8 @@ describe("ADD", () => {
   it("should correctly compute the sum and set flags for an overflow", async () => {
     const cog = getTestCog();
 
-    cog.writeURegister(0x50, 0xffffff00); // Source address with a negative value
-    cog.writeURegister(0x30, 0x105); // Destination address
+    cog.writeRegister(0x50, 0xffffff00); // Source address with a negative value
+    cog.writeRegister(0x30, 0x105); // Destination address
 
     const add = new ADDOperation(
       encodeOpcode({
@@ -91,4 +92,11 @@ describe("ADD", () => {
     expect(cog.Z).toBe(false);
     expect(cog.C).toBe(false);
   });
+
+  testTruthTable(ADDOperation)`
+        dest  | src    | result  | z    | c
+        ${0xffff_fffe}  | ${1}   | ${0xffff_ffff}    | ${0} | ${0}
+        ${0xffff_fffe}  | ${2}   | ${0}    | ${1} | ${1}
+        ${0xffff_fffe}  | ${3}   | ${1}    | ${0} | ${1}
+`;
 });
