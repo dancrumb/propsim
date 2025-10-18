@@ -35,14 +35,6 @@ export class BaseOperation implements Operation {
 
   protected _complete() {}
 
-  protected roles: {
-    src: RegisterRole;
-    dest: RegisterRole;
-  } = {
-    src: { read: "value", write: "none" },
-    dest: { read: "value", write: "value" },
-  };
-
   constructor(public registerValue: number, public cog: Cog) {
     const decoded = decodeOpcode(registerValue);
 
