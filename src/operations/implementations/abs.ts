@@ -1,5 +1,5 @@
 import { BaseOperation } from "../BaseOperation.js";
-import { abs_val } from "./abs-val.js";
+import { abs_val } from "../utils/abs_val.js";
 
 export class ABSOperation extends BaseOperation {
   constructor(...args: ConstructorParameters<typeof BaseOperation>) {

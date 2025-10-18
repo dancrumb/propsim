@@ -1,6 +1,6 @@
 import { BaseOperation } from "../BaseOperation.js";
-import { abs_val } from "./abs-val.js";
-import { sgn_val } from "./sgn_val.js";
+import { abs_val } from "../utils/abs_val.js";
+import { sgn_val } from "../utils/sgn_val.js";
 
 export class ADDABSOperation extends BaseOperation {
   override signedReads = true;

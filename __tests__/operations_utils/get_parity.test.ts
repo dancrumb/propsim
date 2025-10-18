@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { get_parity } from "../../src/operations/implementations/get_parity.js";
+import { get_parity } from "../../src/operations/utils/get_parity.js";
 describe("get_parity", () => {
   it("should return true for numbers with odd parity", () => {
     expect(get_parity(0b00000001)).toBe(true); // 1 one bit

@@ -93,18 +93,6 @@ export class Cog extends EventEmitter {
 
   writeRegister(index: number, value: number) {
     if (this.debug) {
-      this.log(`Writing ${h32(value)} to register ${h16(index)}`);
-    }
-
-    if (index >= 0x1f0) {
-      this.registers.writeRegister(index, value);
-    } else {
-      this.ram.writeRegister(index, value);
-    }
-  }
-
-  writeRegister(index: number, value: number) {
-    if (this.debug) {
       this.log(`Writing ${h32(value >>> 0)} to register ${h16(index)}`);
     }
     if (index >= 0x1f0) {

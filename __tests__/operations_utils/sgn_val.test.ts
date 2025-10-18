@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sgn_val } from "../../src/operations/implementations/sgn_val.js";
+import { sgn_val } from "../../src/operations/utils/sgn_val.js";
 
 describe("sgn_val", () => {
   it("should return a signed values from a hex representation", () => {

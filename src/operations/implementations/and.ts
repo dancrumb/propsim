@@ -1,5 +1,5 @@
 import { BaseOperation } from "../BaseOperation.js";
-import { get_parity } from "./get_parity.js";
+import { get_parity } from "../utils/get_parity.js";
 
 export class ANDOperation extends BaseOperation {
   constructor(...args: ConstructorParameters<typeof BaseOperation>) {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { abs_val } from "../../src/operations/implementations/abs-val.js";
+import { abs_val } from "../../src/operations/utils/abs_val.js";
 
 describe("abs_val", () => {
   it("should return a signed values from a hex representation", () => {
