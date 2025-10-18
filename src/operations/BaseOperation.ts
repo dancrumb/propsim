@@ -43,11 +43,7 @@ export class BaseOperation implements Operation {
     dest: { read: "value", write: "value" },
   };
 
-  constructor(
-    public registerValue: number,
-    public cog: Cog,
-    public signedReads: boolean = false
-  ) {
+  constructor(public registerValue: number, public cog: Cog) {
     const decoded = decodeOpcode(registerValue);
 
     if (decoded === null) {

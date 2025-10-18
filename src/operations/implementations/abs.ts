@@ -4,7 +4,6 @@ import { abs_val } from "../utils/abs_val.js";
 export class ABSOperation extends BaseOperation {
   constructor(...args: ConstructorParameters<typeof BaseOperation>) {
     super(...args);
-    this.signedReads = true;
   }
 
   override _execute(): Promise<void> {

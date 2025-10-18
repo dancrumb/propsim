@@ -2,8 +2,6 @@ import { BaseOperation } from "../BaseOperation.js";
 import { sgn_val } from "../utils/sgn_val.js";
 
 export class ADDSOperation extends BaseOperation {
-  override signedReads = true;
-
   override _execute(): Promise<void> {
     this.result =
       ((this.srcOperand >>> 0) + (this.destOperand >>> 0)) & 0xffffffff;
