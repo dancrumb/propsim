@@ -2,7 +2,7 @@ import { BehaviorSubject, combineLatest, type Observable } from "rxjs";
 import type { Operation } from "../Operation.js";
 import { NOPOperation } from "../operations/implementations/nop.js";
 import { OperationFactory } from "../operations/OperationFactory.js";
-import { h16 } from "../utils/val-display.js";
+import { h16, h32 } from "../utils/val-display.js";
 import type { Cog } from "./Cog.js";
 import type { SystemClock } from "./SystemClock.js";
 
@@ -26,7 +26,7 @@ export class CogProcessor {
     ProcessorPhase.FetchInstruction
   );
 
-  private currentInstruction: number = 0;
+  private currentInstruction: number = -1;
 
   private programCounter$: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);
@@ -55,7 +55,7 @@ export class CogProcessor {
 
   private fetchInstruction() {
     const instLocation = this.nextOperationPtr$.getValue();
-    this.debugLog(`Fetching instruction at ${instLocation}`);
+    this.debugLog(`Fetching instruction at ${h32(instLocation)}`);
     this.currentInstruction = this.cog.readRegister(instLocation) >>> 0;
   }
 
@@ -77,7 +77,7 @@ export class CogProcessor {
       case ProcessorPhase.DecodeInstruction: {
         this.currentOperation$.next(
           OperationFactory.createOperation(this.currentInstruction, this.cog) ??
-            new NOPOperation(this.currentInstruction, this.cog, false)
+            new NOPOperation(this.currentInstruction, this.cog)
         );
 
         this.currentPhase$.next(ProcessorPhase.FetchDstOperand);
@@ -130,13 +130,13 @@ export class CogProcessor {
         }
 
         this.debugLog(`Current Instruction: ${h16(this.currentInstruction)}`);
-        if (this.currentInstruction > 0) {
+        if (this.currentInstruction >= 0) {
           this.programCounter$.next(this.nextOperationPtr$.getValue());
           this.currentOperation$.next(
             OperationFactory.createOperation(
               this.currentInstruction,
               this.cog
-            ) ?? new NOPOperation(this.currentInstruction, this.cog, false)
+            ) ?? new NOPOperation(this.currentInstruction, this.cog)
           );
         } else {
           this.debugLog("Pipeline was reset");
@@ -184,7 +184,7 @@ export class CogProcessor {
 
   resetPipeline() {
     this.debugLog("Resetting pipeline");
-    this.currentInstruction = 0;
+    this.currentInstruction = -1;
     this.nextOperationPtr$.next(
       this.currentOperation$.value!.getNextExpectedPC()
     );

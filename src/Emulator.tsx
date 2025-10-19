@@ -54,8 +54,13 @@ export default function Demo({ propeller }: { propeller: Propeller }) {
       flexDirection="column"
       paddingX={1}
     >
-      <Box flexDirection="row">
-        <Box flexDirection="column" width={12} alignItems="center">
+      <Box flexDirection="row" height="100%">
+        <Box
+          flexDirection="column"
+          width={12}
+          alignItems="center"
+          height="100%"
+        >
           <Box
             flexDirection="column"
             marginBottom={1}

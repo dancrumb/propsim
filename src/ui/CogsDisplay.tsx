@@ -17,7 +17,7 @@ export default function CogsDisplay({
   const cogsStatuses = useObservableEagerState(prev.current);
 
   return (
-    <Box flexDirection="column" margin={0} width={"100%"}>
+    <Box flexDirection="column" margin={0} width={"100%"} height="100%">
       <Box margin={0}>
         {cogs.map((cog) => (
           <Box

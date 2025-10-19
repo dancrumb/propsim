@@ -29,3 +29,6 @@ This will load the binary into the Propeller. It will then attempt to run the Sp
 - `>`: increase autorun speed
 - `|`: pause autorun
 - `0` - `7`: switch cog
+- `↓` and `↑`: Move up and down the Cog RAM
+- `Shift + ↑`: Move to start of Cog RAM
+- `Shift + P`: Move to PC in Cog RAM

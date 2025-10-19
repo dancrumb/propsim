@@ -20,7 +20,6 @@ export default function CogDisplay({
   const pc = useObservableState(cog.pc$, 0);
   const readAhead = useObservableState(cog.readAhead$, 0);
   const [selected, setSelected] = React.useState(0);
-  const size = 16;
 
   const currentInstructionValue = useObservableState(
     cog.pc$.pipe(map((pc) => cog.readRegister(pc) >>> 0))
@@ -28,9 +27,15 @@ export default function CogDisplay({
 
   useInput((_input, key) => {
     if (key.downArrow) {
-      setSelected((s) => Math.min(s + 1, size - 1));
+      setSelected((s) => Math.min(s + 1, 1024));
     } else if (key.upArrow) {
+      if (key.shift) {
+        setSelected(0);
+        return;
+      }
       setSelected((s) => Math.max(s - 1, 0));
+    } else if (_input === "P") {
+      setSelected(pc);
     }
   });
 
@@ -41,17 +46,17 @@ export default function CogDisplay({
       display={hidden ? "none" : "flex"}
       width="100%"
       flexDirection="column"
+      height="100%"
     >
       <Box flexDirection="row" justifyContent="center" width={"100%"}>
         <Box>
           <Text>Cog {cog.id}</Text>
         </Box>
       </Box>
-      <Box flexDirection="row" width={"100%"}>
+      <Box flexDirection="row" width={"100%"} height={"100%"}>
         <Box>
           <RamDisplay
             ram={cogRam}
-            size={size}
             pc={pc}
             readAhead={readAhead}
             selected={selected}
