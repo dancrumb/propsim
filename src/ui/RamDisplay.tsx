@@ -49,14 +49,8 @@ export default function RamDisplay({
   });
 
   React.useEffect(() => {
-    setCurrentOffset((offset) => {
-      if (selected < offset) {
-        return Math.max(0, selected - ramHeight / 2);
-      } else if (selected > offset + ramHeight - 1) {
-        return offset + 1;
-      }
-      return offset;
-    });
+    const targetOffset = selected - Math.floor(ramHeight / 2);
+    setCurrentOffset(Math.min(Math.max(targetOffset, 0), 1024 - ramHeight));
   }, [selected, ramHeight]);
 
   for (let i = currentOffset; i < currentOffset + ramHeight; i += 1) {

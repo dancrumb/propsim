@@ -6,7 +6,10 @@ import { Cog } from "../chip/Cog.js";
 import { decodeOpcode } from "../opcodes/decodeOpcode.js";
 import { renderOperation } from "../opcodes/OperationStructure.js";
 import CogFlagsDisplay from "./CogFlagsDisplay.js";
+import { EventBus } from "./EventBus.js";
 import RamDisplay from "./RamDisplay.js";
+
+const eventBus = EventBus.getInstance();
 
 export default function CogDisplay({
   cog,
@@ -25,19 +28,27 @@ export default function CogDisplay({
     cog.pc$.pipe(map((pc) => cog.readRegister(pc) >>> 0))
   );
 
-  useInput((_input, key) => {
-    if (key.downArrow) {
-      setSelected((s) => Math.min(s + 1, 1024));
-    } else if (key.upArrow) {
-      if (key.shift) {
-        setSelected(0);
-        return;
+  useInput(
+    (input, key) => {
+      if (key.downArrow) {
+        setSelected((s) => Math.min(s + 1, 1024));
+      } else if (key.upArrow) {
+        if (key.shift) {
+          setSelected(0);
+          return;
+        }
+        setSelected((s) => Math.max(s - 1, 0));
+      } else if (input === "P") {
+        setSelected(pc);
+      } else if (input === "G") {
+        eventBus.emitEvent("requestDialog", "GoTo", (address) => {
+          process.stderr.write(`Going to address: ${address}\n`);
+          setSelected(address);
+        });
       }
-      setSelected((s) => Math.max(s - 1, 0));
-    } else if (_input === "P") {
-      setSelected(pc);
-    }
-  });
+    },
+    { isActive: !hidden }
+  );
 
   return (
     <Box
