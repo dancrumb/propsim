@@ -68,7 +68,7 @@ export default function Demo({ propeller }: { propeller: Propeller }) {
         () => {
           systemClock.stepForward(1);
         },
-        state === "x1" ? 500 : 250
+        state === "x1" ? 500 : state === "x2" ? 250 : 100
       );
     }
   }, []);
