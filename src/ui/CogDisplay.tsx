@@ -1,6 +1,6 @@
 import { Box, Text, useInput } from "ink";
 import { useObservableState } from "observable-hooks";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { map } from "rxjs";
 import { Cog } from "../chip/Cog.js";
 import { decodeOpcode } from "../opcodes/decodeOpcode.js";
@@ -10,6 +10,7 @@ import { EventBus } from "./EventBus.js";
 import RamDisplay from "./RamDisplay.js";
 import { useBreakpoints } from "./useBreakpoints.js";
 import { ValueAtCursor } from "./ValueAtCursor.js";
+import { WatchPanel } from "./WatchPanel.js";
 
 const eventBus = EventBus.getInstance();
 
@@ -38,24 +39,13 @@ export default function CogDisplay({
     }
   }, [pc]);
 
+  const onChangeSelected = useCallback((address: number) => {
+    setSelected(address);
+  }, []);
+
   useInput(
-    (input, key) => {
-      if (key.downArrow) {
-        setSelected((s) => Math.min(s + 1, 1024));
-      } else if (key.upArrow) {
-        if (key.shift) {
-          setSelected(0);
-          return;
-        }
-        setSelected((s) => Math.max(s - 1, 0));
-      } else if (input === "P") {
-        setSelected(pc);
-      } else if (input === "G") {
-        eventBus.emitEvent("requestDialog", "GoTo", (address) => {
-          process.stderr.write(`Going to address: ${address}\n`);
-          setSelected(address);
-        });
-      } else if (input === " ") {
+    (input) => {
+      if (input === " ") {
         toggleBreakPoint(selected);
       }
     },
@@ -78,18 +68,26 @@ export default function CogDisplay({
       flexDirection="column"
       height="100%"
     >
-      <Box flexDirection="row" justifyContent="center" width={"100%"}>
+      <Box
+        flexDirection="row"
+        justifyContent="center"
+        width={"100%"}
+        backgroundColor={"blue"}
+        alignItems="center"
+      >
         <Box>
-          <Text>Cog {cog.id}</Text>
+          <Text color={"white"}>Cog {cog.id}</Text>
         </Box>
       </Box>
       <Box flexDirection="row" width={"100%"} height={"100%"}>
         <Box>
           <RamDisplay
+            title={`Cog RAM`}
             ram={cogRam}
             pc={pc}
             readAhead={readAhead}
-            selected={selected}
+            onChangeSelected={onChangeSelected}
+            hidden={hidden}
             breakpoints={
               new Set(
                 Array.from(breakPoints.entries())
@@ -99,7 +97,12 @@ export default function CogDisplay({
             }
           />
         </Box>
-        <Box flexDirection="column" gap={2}>
+        <Box
+          flexDirection="column"
+          gap={2}
+          borderStyle={"round"}
+          borderColor={"grey"}
+        >
           <Box>
             <Text>Running? {isRunning ? "Yes" : "No"}</Text>
           </Box>
@@ -116,6 +119,9 @@ export default function CogDisplay({
             <CogFlagsDisplay cog={cog} />
           </Box>
           <ValueAtCursor cog={cog} address={selected} />
+        </Box>
+        <Box>
+          <WatchPanel cog={cog} hidden={hidden} />
         </Box>
       </Box>
     </Box>

@@ -1,6 +1,14 @@
-import { Box, measureElement, Text, type DOMElement } from "ink";
+import {
+  Box,
+  measureElement,
+  Text,
+  useFocus,
+  useInput,
+  type DOMElement,
+} from "ink";
 import React, { useRef, useState, type ReactElement } from "react";
 import type { CogRam } from "../chip/CogRam.js";
+import { useDialog } from "../DialogProvider.js";
 
 const Pointers = ({
   pc,
@@ -35,24 +43,54 @@ const Pointers = ({
 export default function RamDisplay({
   ram,
   pc,
+  title,
   readAhead,
-  selected = 0,
   breakpoints = new Set<number>(),
+  hidden = false,
 }: {
   ram: CogRam;
   pc: number;
+  title?: string;
   readAhead: number;
-  selected?: number;
+  onChangeSelected?: (address: number) => void;
+  hidden?: boolean;
   breakpoints?: Set<number>;
 }) {
+  const { isFocused } = useFocus({ isActive: !hidden, autoFocus: !hidden });
+
+  const [selected, setSelected] = React.useState(0);
   const [currentOffset, setCurrentOffset] = React.useState(0);
   const [ramHeight, setRamHeight] = useState(32);
   const rows: ReactElement[] = [];
   const ref = useRef<DOMElement | null>(null);
 
+  const { openDialog, dialogIsOpen } = useDialog();
+
+  useInput(
+    (input, key) => {
+      if (key.downArrow) {
+        setSelected((s) => Math.min(s + 1, 1024));
+      } else if (key.upArrow) {
+        if (key.shift) {
+          setSelected(0);
+          return;
+        }
+        setSelected((s) => Math.max(s - 1, 0));
+      } else if (input === "P") {
+        setSelected(pc);
+      } else if (input === "G") {
+        openDialog("GoTo", (address) => {
+          process.stderr.write(`Going to address: ${address}\n`);
+          setSelected(address);
+        });
+      }
+    },
+    { isActive: !(hidden || dialogIsOpen) && isFocused }
+  );
+
   React.useEffect(() => {
     const boundingRect = ref.current ? measureElement(ref.current) : null;
-    setRamHeight(Math.max(boundingRect?.height ?? 0, 2));
+    setRamHeight(Math.max(boundingRect?.height ?? 2, 2) - 1);
   });
 
   React.useEffect(() => {
@@ -92,13 +130,25 @@ export default function RamDisplay({
   return (
     <Box
       ref={ref}
-      flexDirection="column"
-      paddingX={1}
       height={"100%"}
-      overflow="hidden"
-      minWidth={28}
+      borderStyle={"round"}
+      borderColor={isFocused ? "green" : "gray"}
+      flexDirection="column"
+      minWidth={30}
+      alignItems="center"
+      justifyContent="center"
     >
-      {rows}
+      <Box paddingBottom={1}>
+        <Text>{title}</Text>
+      </Box>
+      <Box
+        flexDirection="column"
+        height={"100%"}
+        overflow="hidden"
+        width={"100%"}
+      >
+        {rows}
+      </Box>
     </Box>
   );
 }
