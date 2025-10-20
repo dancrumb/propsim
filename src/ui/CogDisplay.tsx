@@ -1,6 +1,6 @@
 import { Box, Text, useInput } from "ink";
 import { useObservableState } from "observable-hooks";
-import React from "react";
+import React, { useEffect } from "react";
 import { map } from "rxjs";
 import { Cog } from "../chip/Cog.js";
 import { decodeOpcode } from "../opcodes/decodeOpcode.js";
@@ -8,6 +8,7 @@ import { renderOperation } from "../opcodes/OperationStructure.js";
 import CogFlagsDisplay from "./CogFlagsDisplay.js";
 import { EventBus } from "./EventBus.js";
 import RamDisplay from "./RamDisplay.js";
+import { useBreakpoints } from "./useBreakpoints.js";
 import { ValueAtCursor } from "./ValueAtCursor.js";
 
 const eventBus = EventBus.getInstance();
@@ -19,6 +20,8 @@ export default function CogDisplay({
   cog: Cog;
   hidden?: boolean;
 }) {
+  const { breakPoints, toggleBreakPoint, isBreakPointSet } = useBreakpoints();
+
   const cogRam = cog.getRam();
   const isRunning = useObservableState(cog.running$, cog.isRunning());
   const pc = useObservableState(cog.pc$, 0);
@@ -28,6 +31,12 @@ export default function CogDisplay({
   const currentInstructionValue = useObservableState(
     cog.pc$.pipe(map((pc) => cog.readRegister(pc) >>> 0))
   );
+
+  useEffect(() => {
+    if (isBreakPointSet(pc)) {
+      eventBus.emitEvent("stopSimulation");
+    }
+  }, [pc]);
 
   useInput(
     (input, key) => {
@@ -46,9 +55,18 @@ export default function CogDisplay({
           process.stderr.write(`Going to address: ${address}\n`);
           setSelected(address);
         });
+      } else if (input === " ") {
+        toggleBreakPoint(selected);
       }
     },
     { isActive: !hidden }
+  );
+
+  process.stderr.write(
+    `Breakpoints for Cog ${cog.id}: ${Array.from(breakPoints.entries())
+      .filter(([, isSet]) => isSet)
+      .map(([addr]) => addr)
+      .join(", ")}\n`
   );
 
   return (
@@ -72,6 +90,13 @@ export default function CogDisplay({
             pc={pc}
             readAhead={readAhead}
             selected={selected}
+            breakpoints={
+              new Set(
+                Array.from(breakPoints.entries())
+                  .filter(([, isSet]) => isSet)
+                  .map(([addr]) => addr)
+              )
+            }
           />
         </Box>
         <Box flexDirection="column" gap={2}>

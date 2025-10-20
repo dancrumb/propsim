@@ -6,10 +6,12 @@ const Pointers = ({
   pc,
   readAhead,
   i,
+  breakpoint,
 }: {
   pc: number;
   readAhead: number;
   i: number;
+  breakpoint?: boolean;
 }) => {
   const arrowColor =
     pc === readAhead && i === pc
@@ -21,8 +23,11 @@ const Pointers = ({
       : undefined;
 
   return (
-    <Box width={3} height={1} paddingRight={1}>
-      {arrowColor && <Text backgroundColor={arrowColor}> &gt;</Text>}
+    <Box width={3} height={1} paddingRight={1} flexDirection="row">
+      <Box width={1}>{breakpoint && <Text color="red">●</Text>}</Box>
+      <Box width={1}>
+        {arrowColor && <Text backgroundColor={arrowColor}>&gt;</Text>}
+      </Box>
     </Box>
   );
 };
@@ -32,11 +37,13 @@ export default function RamDisplay({
   pc,
   readAhead,
   selected = 0,
+  breakpoints = new Set<number>(),
 }: {
   ram: CogRam;
   pc: number;
   readAhead: number;
   selected?: number;
+  breakpoints?: Set<number>;
 }) {
   const [currentOffset, setCurrentOffset] = React.useState(0);
   const [ramHeight, setRamHeight] = useState(32);
@@ -56,7 +63,12 @@ export default function RamDisplay({
   for (let i = currentOffset; i < currentOffset + ramHeight; i += 1) {
     rows.push(
       <Box key={i} flexDirection="row" height="100%">
-        <Pointers i={i} pc={pc} readAhead={readAhead} />
+        <Pointers
+          i={i}
+          pc={pc}
+          readAhead={readAhead}
+          breakpoint={breakpoints.has(i)}
+        />
         <Box
           key={i}
           flexDirection="row"
