@@ -1,14 +1,13 @@
 import { Box, Text, useInput } from "ink";
 import React from "react";
-import { EventBus } from "./EventBus.js";
+import { useDialog } from "../DialogProvider.js";
 
 type GoToProps = {
   onGoto?: (address: number) => void;
 };
 
-const eventBus = EventBus.getInstance();
-
 export function GoTo({ onGoto }: GoToProps) {
+  const { closeDialog } = useDialog();
   const [inputValue, setInputValue] = React.useState("");
   useInput((input, key) => {
     process.stderr.write(`Input: ${input}\n`);
@@ -17,7 +16,7 @@ export function GoTo({ onGoto }: GoToProps) {
       setInputValue((v) => v.slice(0, v.length - 1));
     } else if (key.return) {
       onGoto?.(parseInt(inputValue, 16) || 0);
-      eventBus.emitEvent("closeDialog", "GoTo");
+      closeDialog("GoTo");
     } else if (input.match(/^[0-9a-fA-F]$/)) {
       setInputValue((v) => (v.length <= 4 ? v + input : v));
     }
