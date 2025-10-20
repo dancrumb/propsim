@@ -5,38 +5,33 @@ export type RunSpeed = "x1" | "x2" | "x3" | "paused";
 
 export default function RunControl({
   onChangeState,
+  state,
 }: {
-  onChangeState?: (state: RunSpeed) => void;
+  state: RunSpeed;
+  onChangeState: (state: RunSpeed) => void;
 }) {
-  const [state, setState] = React.useState<RunSpeed>("paused");
-
   useInput((input) => {
     if (input === ">") {
       if (state === "paused") {
-        setState("x1");
+        onChangeState("x1");
       } else if (state === "x1") {
-        setState("x2");
+        onChangeState("x2");
       } else if (state === "x2") {
-        setState("x3");
+        onChangeState("x3");
       }
     } else if (input === "|") {
-      setState("paused");
+      onChangeState("paused");
     } else if (input === "<") {
       if (state === "x3") {
-        setState("x2");
+        onChangeState("x2");
       } else if (state === "x2") {
-        setState("x1");
+        onChangeState("x1");
       } else if (state === "x1") {
-        setState("paused");
+        onChangeState("paused");
       }
     }
   });
 
-  React.useEffect(() => {
-    if (onChangeState) {
-      onChangeState(state);
-    }
-  }, [state, onChangeState]);
   return (
     <Box flexDirection="row">
       <Box

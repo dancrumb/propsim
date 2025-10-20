@@ -35,6 +35,9 @@ importers:
       unicoderegexp:
         specifier: ^0.4.1
         version: 0.4.1
+      usehooks-ts:
+        specifier: ^3.1.1
+        version: 3.1.1(react@19.2.0)
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.6.2)(tsx@4.20.6)
@@ -660,6 +663,9 @@ packages:
   js-tokens@9.0.1:
     resolution: {integrity: sha512-mxa9E9ITFOt0ban3j6L5MpjwegGz6lBQmM1IJkWeBZGcMxto50+eWdjC/52xDbS2vy0k7vIMK0Fe2wfL9OQSpQ==}
 
+  lodash.debounce@4.0.8:
+    resolution: {integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==}
+
   loupe@3.2.1:
     resolution: {integrity: sha512-CdzqowRJCeLU72bHvWqwRBBlLcMEtIvGrlvef74kMnV2AolS9Y8xUv1I0U/MNAWMhBlKIoyuEgoJ0t/bbwHbLQ==}
 
@@ -907,6 +913,12 @@ packages:
 
   unicoderegexp@0.4.1:
     resolution: {integrity: sha512-ydh8D5mdd2ldTS25GtZJEgLciuF0Qf2n3rwPhonELk3HioX201ClYGvZMc1bCmx6nblZiADQwbMWekeIqs51qw==}
+
+  usehooks-ts@3.1.1:
+    resolution: {integrity: sha512-I4diPp9Cq6ieSUH2wu+fDAVQO43xwtulo+fKEidHUwZPnYImbtkTjzIJYcDcJqxgmX31GVqNFURodvcgHcW0pA==}
+    engines: {node: '>=16.15.0'}
+    peerDependencies:
+      react: ^16.8.0  || ^17 || ^18 || ^19 || ^19.0.0-rc
 
   vite-node@3.2.4:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
@@ -1536,6 +1548,8 @@ snapshots:
 
   js-tokens@9.0.1: {}
 
+  lodash.debounce@4.0.8: {}
+
   loupe@3.2.1: {}
 
   lru-cache@10.4.3: {}
@@ -1767,6 +1781,11 @@ snapshots:
   undici-types@7.13.0: {}
 
   unicoderegexp@0.4.1: {}
+
+  usehooks-ts@3.1.1(react@19.2.0):
+    dependencies:
+      lodash.debounce: 4.0.8
+      react: 19.2.0
 
   vite-node@3.2.4(@types/node@24.6.2)(tsx@4.20.6):
     dependencies:

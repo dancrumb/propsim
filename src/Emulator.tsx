@@ -1,22 +1,21 @@
 import { Box, Text, useInput, useStdout } from "ink";
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import type { Cog } from "./chip/Cog.js";
 import { Propeller } from "./chip/Propeller.js";
 import CogsDisplay from "./ui/CogsDisplay.js";
 import { Dialog } from "./ui/Dialog.js";
-import { EventBus } from "./ui/EventBus.js";
+import { useEventBus } from "./ui/EventBus.js";
 import { GoTo } from "./ui/GoTo.js";
 import HubDisplay from "./ui/HubDisplay.js";
 import RunControl, { type RunSpeed } from "./ui/RunControl.js";
 import SystemClockDisplay from "./ui/SystemClockDisplay.js";
-
-const eventBus = EventBus.getInstance();
 
 const DIALOGS = {
   GoTo: (onGoto?: (address: number) => void) => <GoTo onGoto={onGoto} />,
 };
 
 export default function Demo({ propeller }: { propeller: Propeller }) {
+  const [runSpeed, setRunSpeed] = React.useState<RunSpeed>("paused");
   const systemClock = propeller.systemClock;
   const hub = propeller.hub;
   const cogs: Array<Cog> = propeller.cogs;
@@ -33,30 +32,29 @@ export default function Demo({ propeller }: { propeller: Propeller }) {
   );
   const runningId = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    const { unsubscribe: unsubOpenDialog } = eventBus.subscribeEvent(
-      "requestDialog",
-      (dialogType, onGoTo?: (address: number) => void) => {
-        setDialogContent(
-          DIALOGS[dialogType as keyof typeof DIALOGS]?.(onGoTo) || null
-        );
-        setCurrentDialog(dialogType);
+  const openDialog = useCallback(
+    (dialogType: string, onGoTo?: (address: number) => void) => {
+      setDialogContent(
+        DIALOGS[dialogType as keyof typeof DIALOGS]?.(onGoTo) || null
+      );
+      setCurrentDialog(dialogType);
+    },
+    []
+  );
+
+  useEventBus("requestDialog", openDialog);
+
+  const closeDialog = useCallback(
+    (dialogType: string) => {
+      if (currentDialog === dialogType) {
+        setDialogContent(null);
+        setCurrentDialog(null);
       }
-    );
-    const { unsubscribe: unsubCloseDialog } = eventBus.subscribeEvent(
-      "closeDialog",
-      (dialogType) => {
-        if (currentDialog === dialogType) {
-          setDialogContent(null);
-          setCurrentDialog(null);
-        }
-      }
-    );
-    return () => {
-      unsubOpenDialog();
-      unsubCloseDialog();
-    };
-  }, [currentDialog]);
+    },
+    [currentDialog]
+  );
+
+  useEventBus("closeDialog", closeDialog);
 
   const handleRunControlChange = React.useCallback((state: RunSpeed) => {
     if (runningId.current) {
@@ -71,7 +69,14 @@ export default function Demo({ propeller }: { propeller: Propeller }) {
         state === "x1" ? 500 : state === "x2" ? 250 : 100
       );
     }
+    setRunSpeed(state);
   }, []);
+
+  const pauseSimulation = useCallback(() => {
+    handleRunControlChange("paused");
+  }, [handleRunControlChange]);
+
+  useEventBus("stopSimulation", pauseSimulation);
 
   useInput(
     (input) => {
@@ -118,7 +123,7 @@ export default function Demo({ propeller }: { propeller: Propeller }) {
         <CogsDisplay currentCog={currentCog} cogs={cogs} />
       </Box>
       <Box flexDirection="row" justifyContent="center" width={"100%"}>
-        <RunControl onChangeState={handleRunControlChange} />
+        <RunControl onChangeState={handleRunControlChange} state={runSpeed} />
       </Box>
       <Dialog show={!!dialogContent} onClose={() => setDialogContent(null)}>
         {dialogContent}

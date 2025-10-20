@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { EventEmitter } from "tseep";
 
 type EventBusMap = {
@@ -6,6 +7,7 @@ type EventBusMap = {
     onGoTo: (address: number) => void
   ) => void;
   closeDialog: (dialogType: string) => void;
+  stopSimulation: () => void;
 };
 
 export class EventBus extends EventEmitter<EventBusMap> {
@@ -41,3 +43,14 @@ export class EventBus extends EventEmitter<EventBusMap> {
     };
   }
 }
+
+export const useEventBus = <K extends keyof EventBusMap>(
+  eventName: K,
+  handler: EventBusMap[K]
+) => {
+  const eventBus = EventBus.getInstance();
+  useEffect(() => {
+    const { unsubscribe } = eventBus.subscribeEvent(eventName, handler);
+    return () => unsubscribe();
+  }, [eventName, handler]);
+};
