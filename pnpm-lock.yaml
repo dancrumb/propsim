@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      ansi-regex:
-        specifier: ^6.2.2
-        version: 6.2.2
       ink:
         specifier: ^6.3.1
         version: 6.3.1(@types/react@19.2.0)(react@19.2.0)
@@ -32,15 +29,9 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
-      unicoderegexp:
-        specifier: ^0.4.1
-        version: 0.4.1
       usehooks-ts:
         specifier: ^3.1.1
         version: 3.1.1(react@19.2.0)
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@24.6.2)(tsx@4.20.6)
     devDependencies:
       '@types/node':
         specifier: ^24.6.2
@@ -54,6 +45,9 @@ importers:
       tsx:
         specifier: ^4.20.6
         version: 4.20.6
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@24.6.2)(tsx@4.20.6)
 
 packages:
 
@@ -910,9 +904,6 @@ packages:
 
   undici-types@7.13.0:
     resolution: {integrity: sha512-Ov2Rr9Sx+fRgagJ5AX0qvItZG/JKKoBRAVITs1zk7IqZGTJUwgUr7qoYBpWwakpWilTZFM98rG/AFRocu10iIQ==}
-
-  unicoderegexp@0.4.1:
-    resolution: {integrity: sha512-ydh8D5mdd2ldTS25GtZJEgLciuF0Qf2n3rwPhonELk3HioX201ClYGvZMc1bCmx6nblZiADQwbMWekeIqs51qw==}
 
   usehooks-ts@3.1.1:
     resolution: {integrity: sha512-I4diPp9Cq6ieSUH2wu+fDAVQO43xwtulo+fKEidHUwZPnYImbtkTjzIJYcDcJqxgmX31GVqNFURodvcgHcW0pA==}
@@ -1779,8 +1770,6 @@ snapshots:
   typescript@5.9.3: {}
 
   undici-types@7.13.0: {}
-
-  unicoderegexp@0.4.1: {}
 
   usehooks-ts@3.1.1(react@19.2.0):
     dependencies:
