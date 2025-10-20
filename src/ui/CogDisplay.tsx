@@ -8,6 +8,7 @@ import { renderOperation } from "../opcodes/OperationStructure.js";
 import CogFlagsDisplay from "./CogFlagsDisplay.js";
 import { EventBus } from "./EventBus.js";
 import RamDisplay from "./RamDisplay.js";
+import { ValueAtCursor } from "./ValueAtCursor.js";
 
 const eventBus = EventBus.getInstance();
 
@@ -89,6 +90,7 @@ export default function CogDisplay({
           <Box>
             <CogFlagsDisplay cog={cog} />
           </Box>
+          <ValueAtCursor cog={cog} address={selected} />
         </Box>
       </Box>
     </Box>
