@@ -1,7 +1,8 @@
+import { ObservableBuffer } from "../ObservableBuffer.js";
 import type { MainRam } from "./MainRam.js";
 
 export class CogRam {
-  private buf: Buffer = Buffer.alloc(32 * 496);
+  private buf: ObservableBuffer = new ObservableBuffer(32 * 496);
   constructor(private debug?: boolean) {}
 
   private log(message: string) {
@@ -12,7 +13,7 @@ export class CogRam {
 
   loadFromRam(ram: MainRam, offset = 0) {
     for (let i = 0; i < 32 * 496; i++) {
-      this.buf[i] = ram.readByte(i + offset);
+      this.buf.put(i, ram.readByte(i + offset));
     }
   }
 
