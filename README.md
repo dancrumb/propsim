@@ -32,3 +32,6 @@ This will load the binary into the Propeller. It will then attempt to run the Sp
 - `↓` and `↑`: Move up and down the Cog RAM
 - `Shift + ↑`: Move to start of Cog RAM
 - `Shift + P`: Move to PC in Cog RAM
+- `Shit + G`: Move to a specific register
+- `Tab`: Move focus around the screen
+- `Space`: Toggle breakpoint at cursor
