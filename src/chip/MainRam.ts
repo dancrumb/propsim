@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
+import { ObservableBuffer } from "../ObservableBuffer.js";
 
 export class MainRam {
-  private buf: Buffer = Buffer.alloc(32 * 8196);
+  private buf: ObservableBuffer = new ObservableBuffer(32 * 8196);
   constructor(private filename: string) {
     if (filename === "NUL") {
       return;
@@ -10,7 +11,7 @@ export class MainRam {
     if (fileBuf.length > this.buf.length) {
       throw new Error("File too large for MainRam");
     }
-    fileBuf.copy(this.buf);
+    this.buf.loadFromBuffer(fileBuf);
   }
 
   writeByte(address: number, value: number) {
