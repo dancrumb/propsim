@@ -3,13 +3,10 @@ import { useObservableState } from "observable-hooks";
 import React, { useCallback, useEffect } from "react";
 import { map } from "rxjs";
 import { Cog } from "../chip/Cog.js";
-import { decodeOpcode } from "../opcodes/decodeOpcode.js";
-import { renderOperation } from "../opcodes/OperationStructure.js";
-import CogFlagsDisplay from "./CogFlagsDisplay.js";
+import { CogInfo } from "./CogInfo.js";
 import { EventBus } from "./EventBus.js";
 import RamDisplay from "./RamDisplay.js";
 import { useBreakpoints } from "./useBreakpoints.js";
-import { ValueAtCursor } from "./ValueAtCursor.js";
 import { WatchPanel } from "./WatchPanel.js";
 
 const eventBus = EventBus.getInstance();
@@ -103,22 +100,12 @@ export default function CogDisplay({
           borderStyle={"round"}
           borderColor={"grey"}
         >
-          <Box>
-            <Text>Running? {isRunning ? "Yes" : "No"}</Text>
-          </Box>
-          <Box>
-            <Text>
-              Current Operation:{" "}
-              {currentInstructionValue
-                ? renderOperation(decodeOpcode(currentInstructionValue))
-                : "NONE"}
-            </Text>
-          </Box>
-
-          <Box>
-            <CogFlagsDisplay cog={cog} />
-          </Box>
-          <ValueAtCursor cog={cog} address={selected} />
+          <CogInfo
+            currentInstructionValue={currentInstructionValue}
+            isRunning={isRunning}
+            cog={cog}
+            selected={selected}
+          />
         </Box>
         <Box>
           <WatchPanel cog={cog} hidden={hidden} />
