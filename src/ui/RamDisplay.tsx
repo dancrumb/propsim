@@ -6,7 +6,7 @@ import {
   useInput,
   type DOMElement,
 } from "ink";
-import React, { useRef, useState, type ReactElement } from "react";
+import React, { useEffect, useRef, useState, type ReactElement } from "react";
 import type { CogRam } from "../chip/CogRam.js";
 import { useDialog } from "../DialogProvider.js";
 
@@ -47,6 +47,7 @@ export default function RamDisplay({
   readAhead,
   breakpoints = new Set<number>(),
   hidden = false,
+  onChangeSelected,
 }: {
   ram: CogRam;
   pc: number;
@@ -65,6 +66,10 @@ export default function RamDisplay({
   const ref = useRef<DOMElement | null>(null);
 
   const { openDialog, dialogIsOpen } = useDialog();
+
+  useEffect(() => {
+    onChangeSelected?.(selected);
+  }, [selected, onChangeSelected]);
 
   useInput(
     (input, key) => {

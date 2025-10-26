@@ -99,7 +99,7 @@ export default function CogDisplay({
         </Box>
         <Box
           flexDirection="column"
-          gap={2}
+          gap={1}
           borderStyle={"round"}
           borderColor={"grey"}
         >
