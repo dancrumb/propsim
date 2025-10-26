@@ -33,7 +33,7 @@ export function ValueAtCursor({ cog, address }: ValueAtCursorProps) {
   return (
     <Box
       borderStyle={"single"}
-      minHeight={4}
+      minHeight={8}
       minWidth={20}
       paddingX={1}
       flexDirection="column"

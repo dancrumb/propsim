@@ -10,8 +10,6 @@ export function GoTo({ onGoto }: GoToProps) {
   const { closeDialog } = useDialog();
   const [inputValue, setInputValue] = React.useState("");
   useInput((input, key) => {
-    process.stderr.write(`Input: ${input}\n`);
-    process.stderr.write(`Key: ${JSON.stringify(key)}\n`);
     if (key.backspace || key.delete) {
       setInputValue((v) => v.slice(0, v.length - 1));
     } else if (key.return) {

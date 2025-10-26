@@ -106,8 +106,7 @@ export default function CogDisplay({
             cog={cog}
             selected={selected}
           />
-        </Box>
-        <Box>
+
           <WatchPanel cog={cog} hidden={hidden} />
         </Box>
       </Box>

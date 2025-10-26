@@ -4,6 +4,7 @@ import { inspect } from "util";
 import { Propeller } from "./chip/Propeller.js";
 import { DialogProvider } from "./DialogProvider.js";
 import Demo from "./Emulator.js";
+import { WatchProvider } from "./ui/WatchProvider.js";
 
 const binaryFileName = process.argv[2];
 
@@ -16,7 +17,9 @@ const propeller = new Propeller(binaryFileName);
 process.stderr.write(inspect(propeller.powerOn()) + "\n");
 
 render(
-  <DialogProvider>
-    <Demo propeller={propeller} />
-  </DialogProvider>
+  <WatchProvider>
+    <DialogProvider>
+      <Demo propeller={propeller} />
+    </DialogProvider>
+  </WatchProvider>
 );
