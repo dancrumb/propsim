@@ -27,6 +27,7 @@ const rangeOverlaps =
 export class ObservableBuffer {
   private observers: Map<[number, number], Watch> = new Map();
   private _internal: Buffer;
+  private _watchIdCounter = 0;
 
   constructor(size: number) {
     this._internal = Buffer.alloc(size);
@@ -49,7 +50,7 @@ export class ObservableBuffer {
     }
     const initialData = this.readRange(from, to, renderAs);
     const observer: Watch = {
-      watchId: +Date(),
+      watchId: this._watchIdCounter++,
       observable: new BehaviorSubject<{
         location: WatchLocation;
         data: number[];
