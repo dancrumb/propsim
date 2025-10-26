@@ -7,7 +7,7 @@ export default function RunControl({ cog }: { cog: Cog }) {
   const { Z, C } = useObservableState(cog.flags$, { Z: false, C: false });
 
   return (
-    <Box flexDirection="row">
+    <Box flexDirection="row" height={3}>
       <Box
         borderStyle={"round"}
         width={5}

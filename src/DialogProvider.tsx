@@ -1,15 +1,24 @@
 import React from "react";
 
+import { AddWatch } from "./ui/AddWatch.js";
 import { Dialog } from "./ui/Dialog.js";
 import { GoTo } from "./ui/GoTo.js";
 
 const DIALOGS = {
   GoTo: (onGoto?: (address: number) => void) => <GoTo onGoto={onGoto} />,
-};
+  AddWatch: (onAddWatch?: (watchString: string) => void) => (
+    <AddWatch onAddWatch={onAddWatch} />
+  ),
+} as const;
+
+type SimDialogs = typeof DIALOGS;
 
 const DialogContext = React.createContext<{
-  openDialog: (dialogType: string, onGoTo?: (address: number) => void) => void;
-  closeDialog: (dialogType: string) => void;
+  openDialog: (
+    dialogType: keyof SimDialogs,
+    ...dialogArgs: Parameters<SimDialogs[typeof dialogType]>
+  ) => void;
+  closeDialog: (dialogType: keyof SimDialogs) => void;
   dialogIsOpen: boolean;
 } | null>(null);
 
@@ -27,10 +36,11 @@ export function DialogProvider({ children }: { children: React.ReactNode }) {
   const [currentDialog, setCurrentDialog] = React.useState<string | null>(null);
 
   const openDialog = React.useCallback(
-    (dialogType: string, onGoTo?: (address: number) => void) => {
-      setDialogContent(
-        DIALOGS[dialogType as keyof typeof DIALOGS]?.(onGoTo) || null
-      );
+    (
+      dialogType: keyof SimDialogs,
+      ...dialogArgs: Parameters<SimDialogs[typeof dialogType]>
+    ) => {
+      setDialogContent(DIALOGS[dialogType]?.(...(dialogArgs as any)) || null);
       setCurrentDialog(dialogType);
     },
     []

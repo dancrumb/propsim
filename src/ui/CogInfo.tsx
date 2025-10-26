@@ -18,20 +18,21 @@ export function CogInfo({
   selected: number;
 }) {
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box>
-        <Text>Running? {isRunning ? "Yes" : "No"}</Text>
+    <Box flexDirection="column">
+      <Box height={10} flexDirection="column">
+        <Box paddingLeft={1}>
+          <Text>Running? {isRunning ? "Yes" : "No"}</Text>
+        </Box>
+        <Box paddingLeft={1}>
+          <Text>
+            Current Operation:{" "}
+            {currentInstructionValue
+              ? renderOperation(decodeOpcode(currentInstructionValue))
+              : "NONE"}
+          </Text>
+        </Box>
       </Box>
-      <Box>
-        <Text>
-          Current Operation:{" "}
-          {currentInstructionValue
-            ? renderOperation(decodeOpcode(currentInstructionValue))
-            : "NONE"}
-        </Text>
-      </Box>
-
-      <Box>
+      <Box height={10}>
         <CogFlagsDisplay cog={cog} />
       </Box>
       <ValueAtCursor cog={cog} address={selected} />

@@ -12,7 +12,7 @@ export enum WatchLocation {
   Cog7 = 7,
 }
 
-type Watch = {
+export type Watch = {
   watchId: number;
   observable: Observable<{ location: WatchLocation; data: number[] }>;
   location: WatchLocation;
