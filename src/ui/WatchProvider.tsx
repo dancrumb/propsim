@@ -1,9 +1,11 @@
 import React, {
   createContext,
   useCallback,
+  useMemo,
   type PropsWithChildren,
 } from "react";
-import type { Watch } from "../ObservableBuffer.js";
+import { useMap } from "usehooks-ts";
+import type { Watch } from "./Watch.js";
 
 const watchContext = createContext<void>(void 0);
 
@@ -14,15 +16,23 @@ export const WatchProvider = ({ children }: PropsWithChildren<{}>) => {
 };
 
 export const useWatches = () => {
-  const [watches, setWatches] = React.useState<Watch[]>([]);
+  const [watches, actions] = useMap<Watch["id"], Watch>(new Map());
+  const [lastWatchId, setLastWatchId] = React.useState(1);
 
-  const addWatch = useCallback((watch: Watch) => {
-    setWatches((prevWatches) => [...prevWatches, watch]);
+  const addWatch = useCallback((watch: Omit<Watch, "id">) => {
+    const watchWithId = { ...watch, id: lastWatchId + 1 };
+    setLastWatchId((id) => id + 1);
+    actions.set(watchWithId.id, watchWithId);
   }, []);
 
-  const removeWatch = useCallback((watch: Watch) => {
-    setWatches((prevWatches) => prevWatches.filter((w) => w !== watch));
+  const removeWatch = useCallback((watchOrId: Watch | Watch["id"]) => {
+    const id = typeof watchOrId === "number" ? watchOrId : watchOrId.id;
+    actions.remove(id);
   }, []);
 
-  return { watches, addWatch, removeWatch };
+  const watchList = useMemo(() => {
+    return Array.from(watches.values());
+  }, [watches]);
+
+  return { watches: watchList, addWatch, removeWatch };
 };

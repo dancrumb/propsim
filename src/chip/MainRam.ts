@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { ObservableBuffer } from "../ObservableBuffer.js";
+import { ObservableBuffer, WatchLocation } from "../ObservableBuffer.js";
 
 export class MainRam {
   private buf: ObservableBuffer = new ObservableBuffer(32 * 8196);
@@ -36,5 +36,9 @@ export class MainRam {
 
   readLong(address: number): number {
     return this.buf.readUInt32LE(address & 0xfc);
+  }
+
+  watch(from: number, to: number, renderAs: "byte" | "word" | "dword") {
+    return this.buf.watch(from, to, WatchLocation.Main, renderAs);
   }
 }

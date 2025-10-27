@@ -49,13 +49,6 @@ export default function CogDisplay({
     { isActive: !hidden }
   );
 
-  process.stderr.write(
-    `Breakpoints for Cog ${cog.id}: ${Array.from(breakPoints.entries())
-      .filter(([, isSet]) => isSet)
-      .map(([addr]) => addr)
-      .join(", ")}\n`
-  );
-
   return (
     <Box
       margin={0}

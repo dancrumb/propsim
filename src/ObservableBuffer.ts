@@ -12,6 +12,18 @@ export enum WatchLocation {
   Cog7 = 7,
 }
 
+export const WatchLocations = {
+  [WatchLocation.Main]: "Main",
+  [WatchLocation.Cog0]: "Cog 0",
+  [WatchLocation.Cog1]: "Cog 1",
+  [WatchLocation.Cog2]: "Cog 2",
+  [WatchLocation.Cog3]: "Cog 3",
+  [WatchLocation.Cog4]: "Cog 4",
+  [WatchLocation.Cog5]: "Cog 5",
+  [WatchLocation.Cog6]: "Cog 6",
+  [WatchLocation.Cog7]: "Cog 7",
+} as const;
+
 export type Watch = {
   watchId: number;
   observable: Observable<{ location: WatchLocation; data: number[] }>;

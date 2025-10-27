@@ -4,19 +4,13 @@ import React from "react";
 import { useDialog } from "../DialogProvider.js";
 import { WatchLocation } from "../ObservableBuffer.js";
 import { inkLog } from "../ink-log.js";
-
-type Watch = {
-  from: number;
-  to: number;
-  location: WatchLocation;
-  as: "BYTE" | "WORD" | "DWORD";
-};
+import type { Watch } from "./Watch.js";
 
 type AddWatchProps = {
-  onAddWatch?: (watchString: Watch) => void;
+  onAddWatch?: (watch: Omit<Watch, "id">) => void;
 };
 
-const parseWatchString = (watchString: string): Watch => {
+const parseWatchString = (watchString: string): Omit<Watch, "id"> => {
   const [location, from, to, asString] = watchString
     .trim()
     .split(":")

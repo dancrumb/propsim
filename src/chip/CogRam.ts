@@ -3,7 +3,7 @@ import type { MainRam } from "./MainRam.js";
 
 export class CogRam {
   private buf: ObservableBuffer = new ObservableBuffer(32 * 496);
-  constructor(private debug?: boolean) {}
+  constructor(private cogId: number, private debug?: boolean) {}
 
   private log(message: string) {
     if (this.debug) {
@@ -24,5 +24,9 @@ export class CogRam {
   writeRegister(address: number, value: number) {
     this.log(`Writing ${value} to ${address}`);
     this.buf.writeUInt32LE(value >>> 0, address * 4);
+  }
+
+  watch(from: number, to: number, renderAs: "byte" | "word" | "dword") {
+    return this.buf.watch(from * 4, to * 4, this.cogId, renderAs);
   }
 }
