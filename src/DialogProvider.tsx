@@ -3,10 +3,11 @@ import React from "react";
 import { AddWatch } from "./ui/AddWatch.js";
 import { Dialog } from "./ui/Dialog.js";
 import { GoTo } from "./ui/GoTo.js";
+import { type Watch } from "./ui/Watch.js";
 
 const DIALOGS = {
   GoTo: (onGoto?: (address: number) => void) => <GoTo onGoto={onGoto} />,
-  AddWatch: (onAddWatch?: (watchString: string) => void) => (
+  AddWatch: (onAddWatch?: (watch: Omit<Watch, "id">) => void) => (
     <AddWatch onAddWatch={onAddWatch} />
   ),
 } as const;

@@ -12,7 +12,7 @@ import type { SystemCounter } from "./SystemCounter.js";
 
 export class Cog extends EventEmitter {
   public debug = true;
-  private ram = new CogRam(this.debug);
+  private ram: CogRam;
   private registers: CogRegisters;
   public readonly running$ = new BehaviorSubject<boolean>(false);
   private flags = new CogFlags();
@@ -34,6 +34,7 @@ export class Cog extends EventEmitter {
   ) {
     super();
 
+    this.ram = new CogRam(this.id, this.debug);
     this.registers = new CogRegisters(systemCounter);
     this.processor = new CogProcessor(this, systemClock, this.running$);
 
