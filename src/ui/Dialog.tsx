@@ -28,7 +28,7 @@ export function Dialog({
       justifyContent="center"
       paddingBottom={1}
     >
-      <Box borderStyle={"round"} padding={1}>
+      <Box borderStyle={"round"} padding={1} backgroundColor={"black"}>
         {children}
       </Box>
     </Box>

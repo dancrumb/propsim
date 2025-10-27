@@ -2,26 +2,18 @@ import { Box, Text, useInput, useStdout } from "ink";
 import React, { useCallback, useRef } from "react";
 import type { Cog } from "./chip/Cog.js";
 import { Propeller } from "./chip/Propeller.js";
+import { useDialog } from "./DialogProvider.js";
 import CogsDisplay from "./ui/CogsDisplay.js";
-import { Dialog } from "./ui/Dialog.js";
 import { useEventBus } from "./ui/EventBus.js";
-import { GoTo } from "./ui/GoTo.js";
 import HubDisplay from "./ui/HubDisplay.js";
 import RunControl, { type RunSpeed } from "./ui/RunControl.js";
 import SystemClockDisplay from "./ui/SystemClockDisplay.js";
-
-const DIALOGS = {
-  GoTo: (onGoto?: (address: number) => void) => <GoTo onGoto={onGoto} />,
-};
 
 export default function Demo({ propeller }: { propeller: Propeller }) {
   const [runSpeed, setRunSpeed] = React.useState<RunSpeed>("paused");
   const systemClock = propeller.systemClock;
   const hub = propeller.hub;
   const cogs: Array<Cog> = propeller.cogs;
-  const [dialogContent, setDialogContent] =
-    React.useState<React.ReactNode>(null);
-  const [currentDialog, setCurrentDialog] = React.useState<string | null>(null);
 
   const { stdout } = useStdout();
   const [currentCog, setCurrentCog] = React.useState(
@@ -32,29 +24,7 @@ export default function Demo({ propeller }: { propeller: Propeller }) {
   );
   const runningId = useRef<NodeJS.Timeout | null>(null);
 
-  const openDialog = useCallback(
-    (dialogType: string, onGoTo?: (address: number) => void) => {
-      setDialogContent(
-        DIALOGS[dialogType as keyof typeof DIALOGS]?.(onGoTo) || null
-      );
-      setCurrentDialog(dialogType);
-    },
-    []
-  );
-
-  useEventBus("requestDialog", openDialog);
-
-  const closeDialog = useCallback(
-    (dialogType: string) => {
-      if (currentDialog === dialogType) {
-        setDialogContent(null);
-        setCurrentDialog(null);
-      }
-    },
-    [currentDialog]
-  );
-
-  useEventBus("closeDialog", closeDialog);
+  const { dialogIsOpen } = useDialog();
 
   const handleRunControlChange = React.useCallback((state: RunSpeed) => {
     if (runningId.current) {
@@ -88,7 +58,7 @@ export default function Demo({ propeller }: { propeller: Propeller }) {
         systemClock.stepForward(4);
       }
     },
-    { isActive: !dialogContent }
+    { isActive: !dialogIsOpen }
   );
 
   return (
@@ -125,9 +95,6 @@ export default function Demo({ propeller }: { propeller: Propeller }) {
       <Box flexDirection="row" justifyContent="center" width={"100%"}>
         <RunControl onChangeState={handleRunControlChange} state={runSpeed} />
       </Box>
-      <Dialog show={!!dialogContent} onClose={() => setDialogContent(null)}>
-        {dialogContent}
-      </Dialog>
     </Box>
   );
 }
