@@ -4,6 +4,5 @@
     "source.addMissingImports": "always",
     "source.organizeImports": "always"
   },
-  "cSpell.words": ["ABSNEG", "COGINIT", "WAITCNT", "zcri"],
-  "idf.pythonInstallPath": "/usr/bin/python3"
+  "cSpell.words": ["ABSNEG", "COGINIT", "WAITCNT", "zcri"]
 }

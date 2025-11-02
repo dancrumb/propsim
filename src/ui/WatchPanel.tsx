@@ -69,7 +69,7 @@ export function WatchPanel({
           : cog.getRam();
 
       const sub = ram
-        .watch(watch.from, watch.to, watch.as.toLowerCase() as any)
+        .watch(watch.from, watch.to, watch.as.toLowerCase() as 'byte' | 'word' | 'dword')
         .subscribe({
           next: ({ data }) => {
             actions.set(watch.id, data);
