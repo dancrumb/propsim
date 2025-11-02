@@ -31,7 +31,7 @@ export const useWatches = () => {
   const removeWatch = useCallback((watchOrId: Watch | Watch["id"]) => {
     const id = typeof watchOrId === "number" ? watchOrId : watchOrId.id;
     actions.remove(id);
-  }, []);
+  }, [actions]);
 
   const watchList = useMemo(() => {
     return Array.from(watches.values());
