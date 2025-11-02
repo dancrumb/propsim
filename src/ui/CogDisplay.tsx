@@ -91,7 +91,7 @@ export default function CogDisplay({
           flexDirection="column"
           gap={1}
           borderStyle={"round"}
-          borderColor={"gray"}
+          borderColor={"grey"}
           width={70}
         >
           <CogInfo
