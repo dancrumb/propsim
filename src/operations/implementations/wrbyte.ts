@@ -13,7 +13,10 @@ export class WRBYTEOperation extends BaseOperation {
     this.cog.log(
       `Writing ${h32(this.destOperand)} to RAM address ${h16(this.srcOperand)}`
     );
-    this.cog.hub.mainRamReader.writeByte(this.srcOperand, this.destOperand);
+    this.cog.hub.mainRamReader.writeByte({
+      address: this.srcOperand,
+      value: this.destOperand,
+    });
 
     return Promise.resolve();
   }

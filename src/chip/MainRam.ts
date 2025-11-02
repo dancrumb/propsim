@@ -14,16 +14,19 @@ export class MainRam {
     this.buf.loadFromBuffer(fileBuf);
   }
 
-  writeByte(address: number, value: number) {
-    this.buf.writeUInt8(value & 0xff, address);
+  writeByte({ address, value }: { address: number; value: number }) {
+    this.buf.writeUInt8({ value: value & 0xff, offset: address });
   }
 
-  writeWord(address: number, value: number) {
-    this.buf.writeUInt16LE(value & 0xffff, address & 0xfe);
+  writeWord({ address, value }: { address: number; value: number }) {
+    this.buf.writeUInt16LE({
+      value: value & 0xffff,
+      offset: address & 0xfffffe,
+    });
   }
 
-  writeLong(address: number, value: number) {
-    this.buf.writeInt32LE(value, address & 0xfc);
+  writeLong({ address, value }: { address: number; value: number }) {
+    this.buf.writeInt32LE({ value, offset: address & 0xfffffc });
   }
 
   readByte(address: number): number {
@@ -31,11 +34,11 @@ export class MainRam {
   }
 
   readWord(address: number): number {
-    return this.buf.readUInt16LE(address & 0xfe);
+    return this.buf.readUInt16LE(address & 0xfffffe);
   }
 
   readLong(address: number): number {
-    return this.buf.readUInt32LE(address & 0xfc);
+    return this.buf.readUInt32LE(address & 0xfffffc);
   }
 
   watch(from: number, to: number, renderAs: "byte" | "word" | "dword") {

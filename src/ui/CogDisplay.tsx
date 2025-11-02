@@ -92,6 +92,7 @@ export default function CogDisplay({
           gap={1}
           borderStyle={"round"}
           borderColor={"grey"}
+          width={70}
         >
           <CogInfo
             currentInstructionValue={currentInstructionValue}

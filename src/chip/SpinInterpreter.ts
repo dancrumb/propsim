@@ -1,4 +1,5 @@
-import { h16, h8 } from "../utils/val-display.js";
+import { inkLog } from "../ink-log.js";
+import { h16, h32, h8 } from "../utils/val-display.js";
 import type { Cog } from "./Cog.js";
 import type { MainRam } from "./MainRam.js";
 
@@ -28,20 +29,20 @@ export class SpinInterpreter {
     this.dCurr = this.mainRam.readWord(0x0e);
   }
 
+  private log(message: string) {
+    inkLog(`[SPIN]: ${message}`);
+  }
+
   private pushLong(val: number) {
-    process.stderr.write(
-      `  Writing data long ${h16(val)} at ${h16(this.dCurr)}\n`
-    );
-    this.mainRam.writeLong(this.dCurr, val);
+    this.log(`  Writing data long ${h32(val)} at ${h16(this.dCurr)}`);
+    this.mainRam.writeLong({ address: this.dCurr, value: val });
     this.dCurr += 4;
   }
 
   private popLong(): number {
     this.dCurr -= 4;
     const val = this.mainRam.readLong(this.dCurr);
-    process.stderr.write(
-      `  Reading data long ${h16(val)} from ${h16(this.dCurr)}\n`
-    );
+    this.log(`  Reading data long ${h32(val)} from ${h16(this.dCurr)}`);
     return val;
   }
 
@@ -61,10 +62,10 @@ export class SpinInterpreter {
         );
       }
 
-      process.stderr.write(
+      this.log(
         `Interpreting SPIN op ${spinOp} at address ${h16(pCurr)}; dCurr=${h16(
           dCurr
-        )}\n`
+        )}`
       );
       switch (spinOp) {
         case "lalo": {
@@ -103,10 +104,10 @@ export class SpinInterpreter {
             memaddr += this.dBase;
           }
 
-          process.stderr.write(
+          this.log(
             `  LALO with memfunc=${memfunc} memsize=${memsize} membase=${membase} memaddr=${h16(
               memaddr
-            )}; dcurr = ${h16(dCurr)}, pBase = ${h16(this.pBase)}\n`
+            )}; dcurr = ${h16(dCurr)}, pBase = ${h16(this.pBase)}`
           );
 
           if (memfunc === 3) {
@@ -168,10 +169,10 @@ export class SpinInterpreter {
             cogId = this.cogs.findIndex((cog) => !cog.isRunning());
           }
 
-          process.stderr.write(
+          this.log(
             `Starting COG ${cogId} at address ${h16(
               asmStart
-            )} with parameter ${parVal}\n`
+            )} with parameter ${parVal}`
           );
           const cog = this.cogs[cogId];
           if (!cog) {

@@ -13,7 +13,10 @@ export class WRWORDOperation extends BaseOperation {
     this.cog.log(
       `Writing ${h32(this.destOperand)} to RAM address ${h16(this.srcOperand)}`
     );
-    this.cog.hub.mainRamReader.writeWord(this.srcOperand, this.destOperand);
+    this.cog.hub.mainRamReader.writeWord({
+      address: this.srcOperand,
+      value: this.destOperand,
+    });
 
     return Promise.resolve();
   }
