@@ -1,10 +1,18 @@
 import { Box, Newline, Text } from "ink";
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import { WatchLocations } from "../ObservableBuffer.js";
 import { h16, h32, h8 } from "../utils/val-display.js";
 import type { Watch } from "./Watch.js";
 
-export function WatchEntry({ watch, data }: { watch: Watch; data: number[] }) {
+export function WatchEntry({
+  watch,
+  data,
+  selected = false,
+}: {
+  watch: Watch;
+  data: number[];
+  selected?: boolean;
+}) {
   const previousDataRef = React.useRef<number[] | null>(null);
 
   const changed: boolean[] = React.useMemo(() => {
@@ -27,7 +35,7 @@ export function WatchEntry({ watch, data }: { watch: Watch; data: number[] }) {
       alignItems="flex-start"
       paddingX={1}
     >
-      <Box backgroundColor={"magenta"} width={"80%"}>
+      <Box backgroundColor={selected ? "magenta" : "grey"} width={"80%"}>
         <Text>
           {WatchLocations[watch.location]}[{h16(watch.from)}-{h16(watch.to)}] as{" "}
           {watch.as}
@@ -36,8 +44,8 @@ export function WatchEntry({ watch, data }: { watch: Watch; data: number[] }) {
       <Box>
         <Text>
           {data.map((v: number, i: number) => (
-            <>
-              <Text key={i} backgroundColor={changed[i] ? "yellow" : "black"}>
+            <Fragment key={i}>
+              <Text backgroundColor={changed[i] ? "yellow" : "black"}>
                 {watch.as === "BYTE"
                   ? h8(v)
                   : watch.as === "WORD"
@@ -49,11 +57,11 @@ export function WatchEntry({ watch, data }: { watch: Watch; data: number[] }) {
               0 ? (
                 <Newline />
               ) : i === data.length - 1 ? (
-                ""
+                <Text></Text>
               ) : (
                 <Text>:</Text>
               )}
-            </>
+            </Fragment>
           ))}
         </Text>
       </Box>

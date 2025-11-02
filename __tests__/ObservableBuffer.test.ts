@@ -34,10 +34,10 @@ describe("ObservableBuffer", () => {
       { location: WatchLocation.Main, data: [1, 2, 3, 4] },
     ]);
 
-    buffer.writeUInt8(1, 0);
-    buffer.writeUInt8(2, 1);
-    buffer.writeUInt8(3, 2);
-    buffer.writeUInt8(4, 3);
+    buffer.writeUInt8({ value: 1, offset: 0 });
+    buffer.writeUInt8({ value: 2, offset: 1 });
+    buffer.writeUInt8({ value: 3, offset: 2 });
+    buffer.writeUInt8({ value: 4, offset: 3 });
 
     await outcome;
   });
@@ -53,10 +53,10 @@ describe("ObservableBuffer", () => {
       { location: WatchLocation.Main, data: [0x0201, 0x0403] },
     ]);
 
-    buffer.writeUInt8(1, 0);
-    buffer.writeUInt8(2, 1);
-    buffer.writeUInt8(3, 2);
-    buffer.writeUInt8(4, 3);
+    buffer.writeUInt8({ value: 1, offset: 0 });
+    buffer.writeUInt8({ value: 2, offset: 1 });
+    buffer.writeUInt8({ value: 3, offset: 2 });
+    buffer.writeUInt8({ value: 4, offset: 3 });
 
     await outcome;
   });
@@ -72,10 +72,10 @@ describe("ObservableBuffer", () => {
       { location: WatchLocation.Main, data: [0x04030201] },
     ]);
 
-    buffer.writeUInt8(1, 0);
-    buffer.writeUInt8(2, 1);
-    buffer.writeUInt8(3, 2);
-    buffer.writeUInt8(4, 3);
+    buffer.writeUInt8({ value: 1, offset: 0 });
+    buffer.writeUInt8({ value: 2, offset: 1 });
+    buffer.writeUInt8({ value: 3, offset: 2 });
+    buffer.writeUInt8({ value: 4, offset: 3 });
 
     await outcome;
   });
@@ -89,8 +89,8 @@ describe("ObservableBuffer", () => {
       { location: WatchLocation.Main, data: [1, 2, 3, 4] },
     ]);
 
-    buffer.writeUInt16LE(0x0201, 0);
-    buffer.writeUInt16LE(0x0403, 2);
+    buffer.writeUInt16LE({ value: 0x0201, offset: 0 });
+    buffer.writeUInt16LE({ value: 0x0403, offset: 2 });
     await outcome;
   });
 
@@ -103,8 +103,8 @@ describe("ObservableBuffer", () => {
       { location: WatchLocation.Main, data: [0x0201, 0x0403] },
     ]);
 
-    buffer.writeUInt16LE(0x0201, 0);
-    buffer.writeUInt16LE(0x0403, 2);
+    buffer.writeUInt16LE({ value: 0x0201, offset: 0 });
+    buffer.writeUInt16LE({ value: 0x0403, offset: 2 });
 
     await outcome;
   });
@@ -118,8 +118,8 @@ describe("ObservableBuffer", () => {
       { location: WatchLocation.Main, data: [0x04030201] },
     ]);
 
-    buffer.writeUInt16LE(0x0201, 0);
-    buffer.writeUInt16LE(0x0403, 2);
+    buffer.writeUInt16LE({ value: 0x0201, offset: 0 });
+    buffer.writeUInt16LE({ value: 0x0403, offset: 2 });
 
     await outcome;
   });
@@ -131,7 +131,7 @@ describe("ObservableBuffer", () => {
       { location: WatchLocation.Main, data: [0, 0, 0, 0] },
       { location: WatchLocation.Main, data: [1, 2, 3, 4] },
     ]);
-    buffer.writeUInt32LE(0x04030201, 0);
+    buffer.writeUInt32LE({ value: 0x04030201, offset: 0 });
 
     await outcome;
   });
@@ -144,7 +144,7 @@ describe("ObservableBuffer", () => {
       { location: WatchLocation.Main, data: [0x0201, 0x0403] },
     ]);
 
-    buffer.writeUInt32LE(0x04030201, 0);
+    buffer.writeUInt32LE({ value: 0x04030201, offset: 0 });
 
     await outcome;
   });
@@ -157,7 +157,7 @@ describe("ObservableBuffer", () => {
       { location: WatchLocation.Main, data: [0x04030201] },
     ]);
 
-    buffer.writeUInt32LE(0x04030201, 0);
+    buffer.writeUInt32LE({ value: 0x04030201, offset: 0 });
 
     await outcome;
   });

@@ -1,5 +1,5 @@
 import { Box, Text, useFocus, useInput } from "ink";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import type { Subscription } from "rxjs";
 import { useMap } from "usehooks-ts";
 import type { Cog } from "../chip/Cog.js";
@@ -18,19 +18,46 @@ export function WatchPanel({
 }) {
   const { isFocused } = useFocus({ isActive: !hidden });
   const { watches, addWatch, removeWatch } = useWatches();
+  const [selected, setSelected] = useState(-1);
   const [watchData, actions] = useMap<Watch["id"], any>(new Map());
   const { openDialog, dialogIsOpen } = useDialog();
 
+  const selectNext = useCallback(() => {
+    setSelected((curr) => Math.min(curr + 1, watches.length - 1));
+  }, [watches]);
+  const selectPrevious = useCallback(() => {
+    setSelected((curr) => Math.max(0, curr - 1));
+  }, [watches]);
+
   useInput(
-    (input) => {
+    (input, key) => {
       if (input === "+") {
         openDialog("AddWatch", (watch: Omit<Watch, "id">) => {
           addWatch(watch);
         });
+      } else if (input === "-" && watches[selected]) {
+        removeWatch(watches[selected]!);
+        selectPrevious();
+      } else {
+        if (key.downArrow) {
+          selectNext();
+        } else if (key.upArrow) {
+          selectPrevious();
+        }
       }
     },
     { isActive: isFocused && !dialogIsOpen }
   );
+
+  useEffect(() => {
+    if (watches.length === 0) {
+      setSelected(-1);
+    } else if (selected >= 0) {
+      return;
+    } else {
+      setSelected(0);
+    }
+  }, [selected, watches]);
 
   useEffect(() => {
     const subscriptions: Subscription[] = [];
@@ -77,9 +104,10 @@ export function WatchPanel({
         gap={1}
         width="100%"
       >
-        {watches.map((watch) => (
+        {watches.map((watch, i) => (
           <WatchEntry
             key={watch.id}
+            selected={i === selected}
             watch={watch}
             data={watchData.get(watch.id) || []}
           />

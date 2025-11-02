@@ -23,7 +23,7 @@ export class CogRam {
 
   writeRegister(address: number, value: number) {
     this.log(`Writing ${value} to ${address}`);
-    this.buf.writeUInt32LE(value >>> 0, address * 4);
+    this.buf.writeUInt32LE({ value: value >>> 0, offset: address * 4 });
   }
 
   watch(from: number, to: number, renderAs: "byte" | "word" | "dword") {

@@ -84,7 +84,7 @@ export default function RamDisplay({
       } else if (input === "P") {
         setSelected(pc);
       } else if (input === "G") {
-        openDialog("GoTo", (address) => {
+        openDialog("GoTo", (address: number) => {
           process.stderr.write(`Going to address: ${address}\n`);
           setSelected(address);
         });

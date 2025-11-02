@@ -162,22 +162,22 @@ export class ObservableBuffer {
     this.notifyObservers(index, 1);
   }
 
-  writeUInt8(value: number, offset: number) {
+  writeUInt8({ value, offset }: { value: number; offset: number }) {
     this._internal.writeUInt8(value, offset);
     this.notifyObservers(offset, 1);
   }
 
-  writeUInt16LE(value: number, offset: number) {
+  writeUInt16LE({ value, offset }: { value: number; offset: number }) {
     this._internal.writeUInt16LE(value, offset);
     this.notifyObservers(offset, 2);
   }
 
-  writeUInt32LE(value: number, offset: number) {
+  writeUInt32LE({ value, offset }: { value: number; offset: number }) {
     this._internal.writeUInt32LE(value, offset);
     this.notifyObservers(offset, 4);
   }
 
-  writeInt32LE(value: number, offset: number) {
+  writeInt32LE({ value, offset }: { value: number; offset: number }) {
     this._internal.writeInt32LE(value, offset);
     this.notifyObservers(offset, 4);
   }
