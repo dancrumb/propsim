@@ -4,8 +4,8 @@ import React, { useCallback, useEffect } from "react";
 import { map } from "rxjs";
 import { Cog } from "../chip/Cog.js";
 import { CogInfo } from "./CogInfo.js";
+import CogRamDisplay from "./CogRamDisplay.js";
 import { EventBus } from "./EventBus.js";
-import RamDisplay from "./RamDisplay.js";
 import { useBreakpoints } from "./useBreakpoints.js";
 import { WatchPanel } from "./WatchPanel.js";
 
@@ -71,7 +71,7 @@ export default function CogDisplay({
       </Box>
       <Box flexDirection="row" width={"100%"} height={"100%"}>
         <Box>
-          <RamDisplay
+          <CogRamDisplay
             title={`Cog RAM`}
             ram={cogRam}
             pc={pc}
