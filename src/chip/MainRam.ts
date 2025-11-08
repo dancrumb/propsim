@@ -14,6 +14,10 @@ export class MainRam {
     this.buf.loadFromBuffer(fileBuf);
   }
 
+  get size() {
+    return this.buf.length;
+  }
+
   writeByte({ address, value }: { address: number; value: number }) {
     this.buf.writeUInt8({ value: value & 0xff, offset: address });
   }
