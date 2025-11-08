@@ -6,6 +6,7 @@ import { Cog } from "../chip/Cog.js";
 import { CogInfo } from "./CogInfo.js";
 import CogRamDisplay from "./CogRamDisplay.js";
 import { EventBus } from "./EventBus.js";
+import { MainRamDisplay } from "./MainRamDisplay.js";
 import { useBreakpoints } from "./useBreakpoints.js";
 import { WatchPanel } from "./WatchPanel.js";
 
@@ -102,6 +103,9 @@ export default function CogDisplay({
           />
 
           <WatchPanel cog={cog} hidden={hidden} />
+        </Box>
+        <Box>
+          <MainRamDisplay ram={cog.hub.mainRamReader} hidden={hidden} />
         </Box>
       </Box>
     </Box>
