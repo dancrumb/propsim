@@ -1,4 +1,5 @@
 import { BehaviorSubject } from "rxjs";
+import { inkLog } from "../ink-log.js";
 import { Cog } from "./Cog.js";
 import { Hub } from "./Hub.js";
 import { MainRam } from "./MainRam.js";
@@ -15,6 +16,14 @@ export class Propeller {
   public readonly cogs: Array<Cog>;
   public readonly hub: Hub;
   private spinInterpreter: SpinInterpreter;
+
+  public readonly clockFrequency: number;
+  public readonly initialClk: number;
+  public readonly programBase: number;
+  public readonly variableBase: number;
+  public readonly stackBase: number;
+  public readonly pCurr: number;
+  public readonly dCurr: number;
 
   constructor(binaryFilePath: string) {
     this.mainRam = new MainRam(binaryFilePath);
@@ -43,6 +52,23 @@ export class Propeller {
     this.cogs = cogs;
 
     this.spinInterpreter = new SpinInterpreter(this.mainRam, this.cogs);
+
+    this.clockFrequency = this.hub.mainRamReader.readLong(0);
+    this.initialClk = this.hub.mainRamReader.readByte(4);
+    this.programBase = this.hub.mainRamReader.readWord(6);
+    this.variableBase = this.hub.mainRamReader.readWord(8);
+    this.stackBase = this.hub.mainRamReader.readWord(10);
+    this.pCurr = this.hub.mainRamReader.readWord(12);
+    this.dCurr = this.hub.mainRamReader.readWord(14);
+
+    inkLog(`
+Clock Frequency:  ${this.clockFrequency}
+Initial CLK:      ${this.initialClk}
+PBASE:            ${this.programBase}
+VBASE:            ${this.variableBase}
+DBASE:            ${this.stackBase}
+PCURR             ${this.pCurr}
+DCURR:            ${this.dCurr}`);
   }
 
   /**
