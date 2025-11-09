@@ -8,6 +8,7 @@ import { useEventBus } from "./ui/EventBus.js";
 import HubDisplay from "./ui/HubDisplay.js";
 import RunControl, { type RunSpeed } from "./ui/RunControl.js";
 import SystemClockDisplay from "./ui/SystemClockDisplay.js";
+import WallClockDisplay from "./ui/WallClockDisplay.js";
 
 export default function Demo({ propeller }: { propeller: Propeller }) {
   const [runSpeed, setRunSpeed] = React.useState<RunSpeed>("paused");
@@ -89,6 +90,7 @@ export default function Demo({ propeller }: { propeller: Propeller }) {
             </Box>
           </Box>
           <SystemClockDisplay systemClock={systemClock} />
+          <WallClockDisplay propeller={propeller} />
         </Box>
         <CogsDisplay currentCog={currentCog} cogs={cogs} />
       </Box>
